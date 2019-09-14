@@ -13,7 +13,8 @@
 			</div>
 			<div class="vx-row mb-6">
 				<div class="vx-col w-full">
-					<vs-input type="text " class="w-full" icon-pack="feather" icon="icon-link" icon-no-border label="Tax Number" v-model="newClient.vat" />
+					<label class="ml-1" style="font-size:12px;">Company</label><br>
+					<v-select v-model="newClient.company_id" :options='companies'></v-select>
 				</div>
 			</div>
 			<div class="vx-row mb-6">
@@ -50,7 +51,7 @@
 			</div>
 			<div class="vx-row mb-6">
 				<div class="vx-col w-full">
-					<vs-input type="text " class="w-full" icon-pack="feather" icon="icon-link" icon-no-border label="Tax Number" v-model="editClient.vat" />
+					<vs-input type="text" disabled class="w-full" icon-pack="feather" icon="icon-truck" icon-no-border label="Company" v-model="editClient.company.name" />
 				</div>
 			</div>
 			<div class="vx-row mb-8">
@@ -80,7 +81,7 @@
 						Name
 					</vs-th>
 					<vs-th>
-						Email
+						Company
 					</vs-th>
 					<vs-th sort-key="status">
 						Since
@@ -106,8 +107,8 @@
 						</div>
 					</vs-td>
 
-					<vs-td :data="data[indextr].email">
-						{{data[indextr].email}}
+					<vs-td :data="data[indextr].company.name">
+						{{data[indextr].company.name}}
 					</vs-td>
 
 					<vs-td :data="data[indextr].created_at">
@@ -131,21 +132,11 @@ export default {
 			editPopupActive: false,
 			clients:[],
 			editClient: {
-				name: null,
-				email: null,
-				rank: 0,
-				picture: null,
-				vat: null,
+				company:[],
 			},
 			newClient: {
-				name: null,
-				email: null,
-				password: null,
-				password_confirmation: null,
-				rank: 0,
-				picture: null,
-				vat: null,
 			},
+			companies: []
 		}
 	},
 	methods: {
@@ -153,6 +144,17 @@ export default {
             this.$http.get('/api/users/rank/0', {headers: { 'Authorization': 'Bearer ' + localStorage.token }})
 			.then((response) => {
 				this.clients = response.data
+			})
+			.catch((error) =>{
+				console.log(error)
+			})
+        },
+		getCompanies() {
+            this.$http.get('/api/companies', {headers: { 'Authorization': 'Bearer ' + localStorage.token }})
+			.then((response) => {
+				for(let i = 0; i < response.data.length; i++) {
+					this.companies.push({label: response.data[i].name, value: response.data[i].id})
+				}
 			})
 			.catch((error) =>{
 				console.log(error)
@@ -176,14 +178,16 @@ export default {
             this.editClient.picture = event.target.files[0]
         },
 		createClient() {
+			console.log(2)
+			console.log(this.newClient.company_id)
 			let formData = new FormData();
             formData.append('picture', this.newClient.picture)
 			formData.append('name', this.newClient.name)
 			formData.append('email', this.newClient.email)
 			formData.append('password', this.newClient.password)
-			formData.append('vat', this.editClient.vat)
 			formData.append('password_confirmation', this.newClient.password_confirmation)
-			formData.append('rank', this.newClient.rank)
+			formData.append('company_id', this.newClient.company_id.value)
+			formData.append('rank', 0)
 
 			this.$http.post('/api/auth/signup', formData, {headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + localStorage.token, 'Content-Type': 'multipart/form-data'}})
 			.then((response) => {
@@ -215,7 +219,6 @@ export default {
             formData.append('picture', this.editClient.picture)
 			formData.append('name', this.editClient.name)
 			formData.append('email', this.editClient.email)
-			formData.append('vat', this.editClient.vat)
 			formData.append('_method', "PUT")
 
 			this.$http.post('/api/users/' + this.editClient.id, formData ,{headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + localStorage.token, 'Content-Type': 'multipart/form-data'}})
@@ -280,6 +283,7 @@ export default {
 	},
 	mounted() {
 		this.getClients()
+		this.getCompanies()
 	},
 }
 </script>

@@ -28,7 +28,7 @@ export default [
   {
     url: "/admin/tickets",
     name: "Tickets",
-    slug: "Tickets",
+    slug: "tickets",
     icon: "MessageSquareIcon",
   },
   {
@@ -41,8 +41,13 @@ export default [
 		url: null, // You can omit this
 		name: "Users",
 		slug: "users",
-		icon: "UserIcon",
+		icon: "UsersIcon",
 		submenu: [
+      {
+				url: '/admin/companies',
+				name: "Companies",
+				slug: "users-companies",
+			},
 			{
 				url: '/admin/clients',
 				name: "Clients",

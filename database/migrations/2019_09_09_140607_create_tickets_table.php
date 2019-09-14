@@ -18,6 +18,8 @@ class CreateTicketsTable extends Migration
             $table->string('title');
             $table->integer('user_id');
             $table->integer('staff_id')->default(0);
+            $table->integer('company_id');
+            $table->integer('working_minutes')->default(0);
             $table->integer('status');
             $table->timestamps();
         });

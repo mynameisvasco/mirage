@@ -51,12 +51,6 @@
 				<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
 					<vs-button color="success" @click="replyTicket(viewTicket.id)" icon-pack="feather" icon="icon-send" type="filled">Reply</vs-button>
 				</vs-col>
-				<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
-					<vs-button color="primary" @click="resolveTicket(viewTicket.id)" icon-pack="feather" icon="icon-check" type="filled">Resolved</vs-button>
-				</vs-col>
-				<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
-					<vs-button color="danger" @click="deletePopUpActive = true" icon-pack="feather" icon="icon-trash" type="filled">Delete</vs-button>
-				</vs-col>
 			</vs-row>
 		</vs-popup>
 		<div class="w-full">
@@ -182,80 +176,6 @@ export default {
 			})
 		},
 
-		resolveTicket(id) {
-			let ticket = {
-				status: 2, 
-				_method: 'PUT'
-			} 
-			this.$http.post('/api/tickets/' + id, 
-				ticket,
-				{headers: { 'Authorization': 'Bearer ' + localStorage.token }}
-			)
-			.then((response) => {
-				for(let i = 0; i < this.tickets.length; i++) {
-					if(this.tickets[i].id == response.data.id) {
-						this.$set(this.tickets[i], 'status', response.data.status)
-					}
-				}
-				this.$vs.notify({
-					title:'Success!',
-					text: 'Ticket was marked as resolved',
-					color:'success',
-					position:'top-right'
-				})
-
-				this.editPopupActive = false
-			})
-			.catch((error) =>{
-				//Show error notification
-				Object.keys(error['response'].data.errors).forEach((key) => {
-					let message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', '')
-					//Show error notification
-					this.$vs.notify({
-						title:'Error!',
-						text: message,
-						color:'danger',
-						position:'top-right'
-					})
-				})
-			})
-		},
-
-		deleteTicket(id) {
-			this.$http.delete('/api/tickets/' + id, 
-				{headers: { 'Authorization': 'Bearer ' + localStorage.token }}
-			)
-			.then((response) => {
-				for(let i = 0; i < this.tickets.length; i++) {
-					if(this.tickets[i].id == id) {
-						this.$delete(this.tickets, i)
-					}
-				}
-				this.$vs.notify({
-					title:'Success!',
-					text: 'Ticket was deleted with success',
-					color:'success',
-					position:'top-right'
-				})
-
-				this.deletePopUpActive = false
-				this.editPopupActive = false
-			})
-			.catch((error) =>{
-				//Show error notification
-				Object.keys(error['response'].data.errors).forEach((key) => {
-					let message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', '')
-					//Show error notification
-					this.$vs.notify({
-						title:'Error!',
-						text: message,
-						color:'danger',
-						position:'top-right'
-					})
-				})
-			})
-		},
-
 		createTicket(user_id) {
 			let message = {
 				body: this.newMessage,
@@ -288,6 +208,10 @@ export default {
 	},
 	mounted() {
 		this.getTickets()
+		if(this.$route.fullPath.split("?")[1])
+		{
+			this.getTicket(this.$route.fullPath.split("?")[1])
+		}
 	},
 }
 </script>

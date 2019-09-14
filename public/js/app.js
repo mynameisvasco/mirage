@@ -54745,22 +54745,40 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     // =============================================================================
     path: '',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(2), __webpack_require__.e(0)]).then(__webpack_require__.bind(null, /*! @/layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0)]).then(__webpack_require__.bind(null, /*! @/layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
     },
     children: [// =============================================================================
+    // Common Routes
+    // =============================================================================
+    {
+      path: '/profile',
+      name: 'profile',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! @/views/Profile.vue */ "./resources/js/src/views/Profile.vue"));
+      }
+    }, // =============================================================================
     // Client Routes
     // =============================================================================
     {
-      path: '/client/home',
-      name: 'home-client',
+      path: '/client/tickets',
+      name: 'tickets-client',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! @/views/client/Home.vue */ "./resources/js/src/views/client/Home.vue"));
+        return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! @/views/client/Tickets.vue */ "./resources/js/src/views/client/Tickets.vue"));
       }
     }, {
-      path: '/client/tickets',
-      name: 'tikcets-client',
+      path: '/client/invoices',
+      name: 'invoices-client',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! @/views/client/Tickets.vue */ "./resources/js/src/views/client/Tickets.vue"));
+        return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! @/views/client/Invoices.vue */ "./resources/js/src/views/client/Invoices.vue"));
+      }
+    }, // =============================================================================
+    // Support Routes
+    // =============================================================================
+    {
+      path: '/support/home',
+      name: 'home-support',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! @/views/support/Home.vue */ "./resources/js/src/views/support/Home.vue"));
       }
     }, // =============================================================================
     // Admin Routes
@@ -54769,37 +54787,43 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/admin/home',
       name: 'home-admin',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(10), __webpack_require__.e(1)]).then(__webpack_require__.bind(null, /*! @/views/admin/Home.vue */ "./resources/js/src/views/admin/Home.vue"));
+        return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! @/views/admin/Home.vue */ "./resources/js/src/views/admin/Home.vue"));
       }
     }, {
       path: '/admin/tickets',
       name: 'tickets-admin',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! @/views/admin/Tickets.vue */ "./resources/js/src/views/admin/Tickets.vue"));
+        return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! @/views/admin/Tickets.vue */ "./resources/js/src/views/admin/Tickets.vue"));
+      }
+    }, {
+      path: '/admin/companies',
+      name: 'companies-admin',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! @/views/admin/Companies.vue */ "./resources/js/src/views/admin/Companies.vue"));
       }
     }, {
       path: '/admin/clients',
       name: 'clients-admin',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! @/views/admin/Clients.vue */ "./resources/js/src/views/admin/Clients.vue"));
+        return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! @/views/admin/Clients.vue */ "./resources/js/src/views/admin/Clients.vue"));
       }
     }, {
       path: '/admin/staff',
       name: 'staff-admin',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! @/views/admin/Staff.vue */ "./resources/js/src/views/admin/Staff.vue"));
+        return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! @/views/admin/Staff.vue */ "./resources/js/src/views/admin/Staff.vue"));
       }
     }, {
       path: '/admin/invoices',
       name: 'invoices-admin',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(14), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! @/views/admin/Invoices.vue */ "./resources/js/src/views/admin/Invoices.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(16), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! @/views/admin/Invoices.vue */ "./resources/js/src/views/admin/Invoices.vue"));
       }
     }, {
       path: '/admin/company',
       name: 'company-admin',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! @/views/admin/Company.vue */ "./resources/js/src/views/admin/Company.vue"));
+        return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! @/views/admin/Company.vue */ "./resources/js/src/views/admin/Company.vue"));
       }
     }]
   }, // =============================================================================
@@ -54808,7 +54832,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   {
     path: '',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! @/layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
+      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! @/layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
     },
     children: [// =============================================================================
     // PAGES
@@ -54817,18 +54841,18 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/login',
       name: 'login',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
+        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
       }
     }, {
       path: '/error-404',
       name: 'pageError404',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! @/views/pages/Error404.vue */ "./resources/js/src/views/pages/Error404.vue"));
+        return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! @/views/pages/Error404.vue */ "./resources/js/src/views/pages/Error404.vue"));
       }
     }]
   }, // Redirect to 404 page, if no match found
   {
-    path: '*',
+    path: '/*',
     redirect: '/error-404'
   }]
 });
@@ -54861,7 +54885,7 @@ function () {
                 } else if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.rank == 1) {
                   next('/support/home');
                 } else if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.rank == 0) {
-                  next('/client/home');
+                  next('/client/tickets');
                 }
               } else {
                 next();

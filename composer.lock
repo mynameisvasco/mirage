@@ -4,44 +4,40 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e078780d3ec73b3aa55803eb106ea082",
+    "content-hash": "ecde33c52e7ae2b43582fe0f7861339d",
     "packages": [
         {
-            "name": "barryvdh/laravel-dompdf",
-            "version": "v0.8.5",
+            "name": "consoletvs/invoices",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/barryvdh/laravel-dompdf.git",
-                "reference": "7393732b2f3a3ee357974cbb0c46c9b65b84dad1"
+                "url": "https://github.com/ConsoleTVs/Invoices.git",
+                "reference": "b34ff567a8b4e6ae2a1310d6134fde5a202a7db2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/7393732b2f3a3ee357974cbb0c46c9b65b84dad1",
-                "reference": "7393732b2f3a3ee357974cbb0c46c9b65b84dad1",
+                "url": "https://api.github.com/repos/ConsoleTVs/Invoices/zipball/b34ff567a8b4e6ae2a1310d6134fde5a202a7db2",
+                "reference": "b34ff567a8b4e6ae2a1310d6134fde5a202a7db2",
                 "shasum": ""
             },
             "require": {
                 "dompdf/dompdf": "^0.8",
-                "illuminate/support": "^5.5|^6",
-                "php": ">=7"
+                "ext-bcmath": "*",
+                "illuminate/support": "^5.0|^6.0",
+                "illuminate/view": "^5.0|^6.0",
+                "nesbot/carbon": ">1.22"
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "0.8-dev"
-                },
                 "laravel": {
                     "providers": [
-                        "Barryvdh\\DomPDF\\ServiceProvider"
-                    ],
-                    "aliases": {
-                        "PDF": "Barryvdh\\DomPDF\\Facade"
-                    }
+                        "ConsoleTVs\\Invoices\\InvoicesServiceProvider"
+                    ]
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Barryvdh\\DomPDF\\": "src"
+                    "ConsoleTVs\\Invoices\\": "."
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -50,17 +46,22 @@
             ],
             "authors": [
                 {
-                    "name": "Barry vd. Heuvel",
-                    "email": "barryvdh@gmail.com"
+                    "name": "Erik Campobadal",
+                    "email": "ConsoleTVs@gmail.com"
                 }
             ],
-            "description": "A DOMPDF Wrapper for Laravel",
+            "description": "Generate PDF invoices for your customers in laravel",
             "keywords": [
-                "dompdf",
+                "Erik Campobadal",
+                "create",
+                "customers",
+                "generate",
+                "invoices",
                 "laravel",
+                "open source",
                 "pdf"
             ],
-            "time": "2019-08-23T14:30:33+00:00"
+            "time": "2019-09-07T15:41:53+00:00"
         },
         {
             "name": "defuse/php-encryption",

@@ -36,18 +36,34 @@ const router = new Router({
         path: '',
         component: () => import('@/layouts/main/Main.vue'),
         children: [
+           // =============================================================================
+          // Common Routes
+          // =============================================================================
+          {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('@/views/Profile.vue'),
+          },
           // =============================================================================
           // Client Routes
           // =============================================================================
           {
-            path: '/client/home',
-            name: 'home-client',
-            component: () => import('@/views/client/Home.vue'),
+            path: '/client/tickets',
+            name: 'tickets-client',
+            component: () => import('@/views/client/Tickets.vue'),
           },
           {
-            path: '/client/tickets',
-            name: 'tikcets-client',
-            component: () => import('@/views/client/Tickets.vue'),
+            path: '/client/invoices',
+            name: 'invoices-client',
+            component: () => import('@/views/client/Invoices.vue'),
+          },
+          // =============================================================================
+          // Support Routes
+          // =============================================================================
+          {
+            path: '/support/home',
+            name: 'home-support',
+            component: () => import('@/views/support/Home.vue'),
           },
           // =============================================================================
           // Admin Routes
@@ -61,6 +77,11 @@ const router = new Router({
             path: '/admin/tickets',
             name: 'tickets-admin',
             component: () => import('@/views/admin/Tickets.vue'),
+          },
+          {
+            path: '/admin/companies',
+            name: 'companies-admin',
+            component: () => import('@/views/admin/Companies.vue'),
           },
           {
             path: '/admin/clients',
@@ -108,9 +129,9 @@ const router = new Router({
       },
       // Redirect to 404 page, if no match found
       {
-        path: '*',
+        path: '/*',
         redirect: '/error-404'
-      }
+      },
     ],
 })
 
@@ -133,7 +154,7 @@ router.beforeEach(async (to, from, next) =>{
       } else if (store.state.AppActiveUser.rank == 1) {
         next('/support/home')
       } else if (store.state.AppActiveUser.rank == 0) {
-        next('/client/home')
+        next('/client/tickets')
       }
     }
     else {

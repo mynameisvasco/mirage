@@ -31,10 +31,16 @@ Route::group(['middleware' => 'auth:api'], function()
     Route::put('/users/{id}', 'AuthController@editUser');
     Route::delete('/users/{id}', 'AuthController@deleteUser');
 
-    Route::get('/stats/ticketsNumByDay', 'StatsController@ticketsNumByDay');
+    Route::get('/stats', 'StatsController@index');
     
     Route::resource('tickets', 'TicketController');
+    Route::get('/tickets/resolved/{company_id}', 'TicketController@getResolved');
+
     Route::resource('messages', 'MessageController');
     Route::resource('invoices', 'InvoiceController');
+    Route::resource('companies', 'CompanyController');
+    Route::resource('items', 'ItemController');
     Route::resource('companyinformations', 'CompanyInformationController');
+    Route::delete('/invoices/bulk/{ids}', 'InvoiceController@destroyBulk');
+    Route::put('/invoices/pay/{ids}', 'InvoiceController@pay');
 });

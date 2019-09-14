@@ -20,13 +20,7 @@
 
 export default [
   {
-    url: "/financial/home",
-    name: "Home",
-    slug: "home",
-    icon: "HomeIcon",
-  },
-  {
-    url: "/financial/invoices",
+    url: "/admin/invoices",
     name: "Invoices",
     slug: "invoices",
     icon: "BookmarkIcon",

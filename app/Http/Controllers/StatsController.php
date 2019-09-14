@@ -5,36 +5,45 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ticket;
 use Carbon\Carbon;
-
+use App\Invoice;
+use App\Stat;
 
 class StatsController extends Controller
 {
-    //Returns the number of tickets and the number of the last 7 days
-    public function ticketsNumByDay()
+    public function index()
     {
         if(auth()->user()->isAdmin())
         {
-            $tickets = Ticket::all();
+            $stats = Stat::latest()->get();
         }
-        //If it is a support only return the tickets that belong to him not all
         else if(auth()->user()->isSupport())
         {
-            $tickets = Ticket::where('staff_id', auth()->user()->id)->get();
+            $stats = Stat::latest()->where('user_id', auth()->user()->id)->get();
         }
         else
         {
-            return response()->json(null, 401);
+            return response()->json(null,401);
         }
-        
-        $ticketsLast7Days = ["total" => count($tickets)];
 
-        for($i = 0; $i < 7; $i++)
+        $tickets = array('numTickets' => 0, 'solvedTickets' => 0, 'unsolvedTickets' => 0);
+        $invoices = array('totalMoney' => 0, 'numInvoices' => 0, 'paidInvoices' => 0, 'unpaidInvoices' => 0, 'overdueInvoices' => 0);        
+        foreach($stats as $stat)
         {
-            $tickets = Ticket::whereDate('created_at', Carbon::today()->subDays($i))->get();
-            $ticketsLast7Days["byDayNum"][$i] = count($tickets);
-            $ticketsLast7Days["byDayLabel"][$i] =  Carbon::today()->subDays($i)->isoFormat('MMMM D, YYYY');
+            //Ticket stats
+            if($stat->name == "numTickets") $tickets['numTickets'] = $stat->value;
+            if($stat->name == "solvedTickets") $tickets['solvedTickets'] = $stat->value;
+
+            //Invoices Stats
+            if($stat->name == "numInvoices") $invoices['numInvoices'] = $stat->value;
+            if($stat->name == "paidInvoices") $invoices['paidInvoices'] = $stat->value;
+            if($stat->name == "totalMoney") $invoices['totalMoney'] = $stat->value;
         }
 
-        return response()->json($ticketsLast7Days, 200);
+        $invoices['unpaidInvoices'] = $invoices['numInvoices'] - $invoices['paidInvoices'];
+        $tickets['unsolvedTickets'] = $tickets['numTickets'] - $tickets['solvedTickets'];
+        
+        $stats = array('tickets' => $tickets, 'invoices' => $invoices);
+
+        return response()->json($stats, 200);
     }
 }

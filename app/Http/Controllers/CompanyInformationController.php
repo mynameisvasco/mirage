@@ -38,8 +38,9 @@ class CompanyInformationController extends Controller
     public function update(CompanyInformationRequest $request, $id)
     {
         $companyinformation = CompanyInformation::findOrFail($id);
-        $companyinformation->update($request->except(['taxes', 'logo']));
+        $companyinformation->update($request->except(['taxes', 'logo', 'items']));
         $companyinformation->taxes = json_encode(json_decode($request->taxes));
+        $companyinformation->items = json_encode(json_decode($request->items));
         if($request->hasFile('logo'))
         {
             $request->logo->storeAs('public/company', 'logo.png');

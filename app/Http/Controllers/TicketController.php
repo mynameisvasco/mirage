@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TicketRequest;
 use App\Ticket;
+use App\Stat;
 
 class TicketController extends Controller
 {
@@ -19,7 +20,7 @@ class TicketController extends Controller
         }
         else if(auth()->user()->isAdmin())
         {
-            $tickets = Ticket::orderBy('status', 'asc')->with('user')->get();
+            $tickets = Ticket::orderBy('status', 'asc')->with('user.company')->get();
         }
         else
         {
@@ -38,8 +39,7 @@ class TicketController extends Controller
 
     public function show($id)
     {
-        $ticket = Ticket::with('message')->with('message.user')->findOrFail($id);
-
+        $ticket = Ticket::with('message.user')->with('user.company.items')->findOrFail($id);
         if(auth()->user()->isClient() || auth()->user()->isFinancial()) 
         {
             if($ticket->user_id != auth()->user()->id)
@@ -57,13 +57,30 @@ class TicketController extends Controller
 
         if(auth()->user()->isClient() || auth()->user()->isFinancial()) 
         {
-            if($ticket->user_id != $id)
+            if($ticket->user_id != auth()->user()->id)
             {
                 return response()->json(null, 401);
             }
         }
-
+        
         $ticket->update($request->all());
+        
+        //Check if Ticket was resolved, if yes increase resolved tickets stat for the staff_ID
+        $stat = Stat::where('name', 'solvedTickets')->where('user_id', $ticket->staff_id)->first();
+
+        if(!isset($stat))
+        {
+            $stat = new Stat();
+            $stat->name = 'solvedTickets';
+            $stat->value = 1;
+            $stat->user_id = $ticket->staff_id;
+            $stat->save();
+        }
+        else
+        {
+            $stat->value += 1;
+            $stat->save();
+        }
 
         return response()->json($ticket, 200);
     }
@@ -80,8 +97,20 @@ class TicketController extends Controller
             }
         }
 
+        foreach($ticket->message as $message)
+        {
+            $message->delete();
+        }
+
         Ticket::destroy($id);
 
         return response()->json(null, 204);
+    }
+
+    public function getResolved($company_id)
+    {
+        $tickets = Ticket::where('company_id', $company_id)->where('status', 2)->get();
+
+        return response()->json($tickets, 200);
     }
 }

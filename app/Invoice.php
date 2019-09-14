@@ -8,8 +8,13 @@ class Invoice extends Model
 {
     protected $guarded = ['id'];
 
-    public function user()
+    public function company()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Company');
+    }
+
+    public function ticket()
+    {
+        return $this->belongsTo('App\Ticket');
     }
 }

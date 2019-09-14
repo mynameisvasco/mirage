@@ -1,12 +1,26 @@
 <template>
 	<div class="flex mb-4">
 		<vs-popup background-color="rgba(0,0,0,.6)" class="holamundo" title="Are you sure you want to delete this ticket?" :active.sync="deletePopUpActive">
-			<vs-row vs-justify="right" vs-align="flex-end" >
-				<vs-col vs-justify="right" vs-align="flex-end" class="mb-4" vs-w="12">
-					<p>After take this action you won't be able to go back. Please, make sure it's what you want to do</p>
+			<vs-row >
+				<vs-col class="mb-4" vs-w="12">
+					<p>After take this action you won't be able to go back. Please, make sure it's what you want to do.</p>
 				</vs-col>
-				<vs-col vs-justify="right" vs-align="flex-end" vs-w="12">
+				<vs-col vs-w="12">
 					<vs-button color="danger" @click="deleteTicket(viewTicket.id)" icon-pack="feather" icon="icon-trash" type="filled">Delete</vs-button>
+				</vs-col>
+			</vs-row>
+		</vs-popup>
+		<vs-popup background-color="rgba(0,0,0,.6)" class="holamundo" title="Resolve Ticket" :active.sync="resolvePopUpActive">
+			<vs-row>
+				<vs-col class="mb-4" vs-w="12">
+					<p>Please indicate bellow the minutes spent resolving this ticket</p>
+				</vs-col>
+				<vs-col class="mb-4" vs-align="center" vs-w="12" vs-sm="12" vs-md="6" vs-lg="6">
+					<vs-input type="text" class="w-full" icon-pack="feather" icon="icon-clock" icon-no-border label="Working Minutes" v-model="resTicket.working_minutes" />
+					</vs-input>
+				</vs-col>
+				<vs-col vs-w="12">
+					<vs-button color="primary" @click="resolveTicket(viewTicket.id)" icon-pack="feather" icon="icon-check" type="filled">Resolve</vs-button>
 				</vs-col>
 			</vs-row>
 		</vs-popup>
@@ -38,32 +52,48 @@
 			</vs-row>
 		</vs-popup>
 		<vs-popup class="holamundo" :title="viewTicket.title" :active.sync="editPopupActive">
-			<div :key="viewTicket.message.id" v-for="message in viewTicket.message" style="margin-bottom:50px;">
-				<vs-row>
-					<vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="2">
-						<vs-avatar v-if="message.user.picture" :src="'/storage/avatars/' + message.user.picture "/> 
-						<vs-avatar v-if="!message.user.picture" color="primary" :text="message.user.name"/>
-					</vs-col>
-  					<vs-col vs-type="" vs-justify="center" vs-align="center" vs-w="10">
-						<p>{{message.body}}</p>
-						<small>{{message.created_at}}</small>
-					</vs-col>
-				</vs-row>
+			<div>
+				<vs-tabs alignment="center">
+					<vs-tab label="Messages" icon-pack="feather" icon="icon-message-square">
+						<div class="mt-4">
+							<div :key="viewTicket.message.id" v-for="message in viewTicket.message" style="margin-bottom:50px;">
+								<vs-row>
+									<vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="2">
+										<vs-avatar v-if="message.user.picture" :src="'/storage/avatars/' + message.user.picture "/> 
+										<vs-avatar v-if="!message.user.picture" color="primary" :text="message.user.name"/>
+									</vs-col>
+									<vs-col vs-type="" vs-justify="center" vs-align="center" vs-w="10">
+										<p>{{message.body}}</p>
+										<small>{{message.created_at}}</small>
+									</vs-col>
+								</vs-row>
+							</div>
+						</div>
+						<vs-row vs-justify="center" vs-align="center">
+							<vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+								<vs-textarea style="height:140px;" label="Your message" v-model="newMessage" />
+							</vs-col>
+							<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
+								<vs-button color="success" @click="replyTicket(viewTicket.id)" icon-pack="feather" icon="icon-send" type="filled">Reply</vs-button>
+							</vs-col>
+							<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
+								<vs-button color="primary" @click="resolvePopUpActive = true" icon-pack="feather" icon="icon-check" type="filled">Resolved</vs-button>
+							</vs-col>
+							<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
+								<vs-button color="danger" @click="deletePopUpActive = true" icon-pack="feather" icon="icon-trash" type="filled">Delete</vs-button>
+							</vs-col>
+						</vs-row>
+					</vs-tab>
+					<vs-tab label="Inventory" icon-pack="feather" icon="icon-archive">
+						<div class="vx-col w-full "> 
+							<vs-list>
+								<vs-list-header title="Items"></vs-list-header>
+								<vs-list-item v-for="item in viewTicket.user.company.items" :index="item.id" :title="item.name" :subtitle="item.quantity + ' units. - ' + item.description"></vs-list-item>
+							</vs-list>
+						</div>
+					</vs-tab>
+				</vs-tabs>
 			</div>
-			<vs-row vs-justify="center" vs-align="center">
-				<vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-					<vs-textarea style="height:140px;" label="Your message" v-model="newMessage" />
-				</vs-col>
-				<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
-					<vs-button color="success" @click="replyTicket(viewTicket.id)" icon-pack="feather" icon="icon-send" type="filled">Reply</vs-button>
-				</vs-col>
-				<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
-					<vs-button color="primary" @click="resolveTicket(viewTicket.id)" icon-pack="feather" icon="icon-check" type="filled">Resolved</vs-button>
-				</vs-col>
-				<vs-col vs-type="flex" class="mb-4" vs-justify="center" vs-align="center" vs-w="3" vs-md="4" vs-sm="12">
-					<vs-button color="danger" @click="deletePopUpActive = true" icon-pack="feather" icon="icon-trash" type="filled">Delete</vs-button>
-				</vs-col>
-			</vs-row>
 		</vs-popup>
 		<div class="w-full mt-6">
 			<vs-button icon-pack="feather" @click="newPopupActive = true" class="mb-4" icon="icon-plus">New Ticket</vs-button>
@@ -75,7 +105,7 @@
 				</template>
 				<template slot="thead">
 					<vs-th>
-						Client Name
+						Company Name
 					</vs-th>
 					<vs-th>
 						Title
@@ -92,7 +122,7 @@
 				<template slot-scope="{data}">
 					<vs-tr :key="indextr" v-for="(tr, indextr) in data" >
 					<vs-td :data="data[indextr].user.name">
-						{{data[indextr].user.name}}
+						{{data[indextr].user.company.name}}
 					</vs-td>
 
 					<vs-td :data="data[indextr].title">
@@ -117,20 +147,29 @@
 </template>
 
 <script>
+import store from '../../store/store'
 export default {
 	data() {
 		return {
 			editPopupActive: false,
 			newPopupActive: false,
 			deletePopUpActive: false,
+			resolvePopUpActive: false,
 			tickets:[],
-			viewTicket: [],
+			viewTicket: {
+				user:{
+					company:{}
+				}
+			},
 			newMessage: [],
 			clients: [],
 			newTicket: {
 				client_id: null,
 				title: null,
 			},
+			resTicket: {
+				
+			}
 		}
 	},
 	methods: {
@@ -210,6 +249,7 @@ export default {
 		resolveTicket(id) {
 			let ticket = {
 				status: 2, 
+				working_minutes: this.resTicket.working_minutes,
 				_method: 'PUT'
 			} 
 			this.$http.post('/api/tickets/' + id, 
@@ -229,7 +269,9 @@ export default {
 					position:'top-right'
 				})
 
+				this.resolvePopUpActive = false
 				this.editPopupActive = false
+				
 			})
 			.catch((error) =>{
 				//Show error notification
@@ -293,7 +335,8 @@ export default {
 				{headers: { 'Authorization': 'Bearer ' + localStorage.token }}
 			)
 			.then((response) => {
-				this.tickets.push(response.data[0])
+				this.tickets.unshift(response.data[0])
+				this.newPopupActive = false
 				this.$vs.notify({
 					title:'Success!',
 					text: 'Message was sent and ticket was creted!',
@@ -315,5 +358,13 @@ export default {
 		this.getTickets()
 		this.getClients()
 	},
+	beforeRouteEnter : (to, from, next) => {
+		//Only admins and supports have access to this route
+		if(store.state.AppActiveUser.rank != 3 && store.state.AppActiveUser.rank != 1) {
+			next('/login')
+		} else {
+			next()
+		}
+	}
 }
 </script>

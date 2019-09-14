@@ -133,18 +133,10 @@ export default {
 			editPopupActive: false,
 			staffs:[],
 			editStaff: {
-				name: null,
-				email: null,
-				rank: 0,
-				picture: null,
+				rank: [],
 			},
 			newStaff: {
-				name: null,
-				email: null,
-				rank: 0,
-				password: null,
-				password_confirmation: null,
-				picture: null,
+				rank: { label: "", value: 0},
 			},
 		}
 	},
@@ -194,6 +186,8 @@ export default {
 			formData.append('password', this.newStaff.password)
 			formData.append('password_confirmation', this.newStaff.password_confirmation)
 			formData.append('rank', this.newStaff.rank.value)
+			formData.append('address', this.newStaff.address)
+			formData.append('vat', 0) //Not necessary for staff members
 
 			this.$http.post('/api/auth/signup', formData, {headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + localStorage.token, 'Content-Type': 'multipart/form-data'}})
 			.then((response) => {
@@ -225,6 +219,8 @@ export default {
 			formData.append('name', this.editStaff.name)
 			formData.append('email', this.editStaff.email)
 			formData.append('rank', this.editStaff.rank.value)
+			formData.append('address', this.editStaff.address)
+			formData.append('vat', 0) //Not necessary for staff members
 			formData.append('_method', "PUT")
 
 			this.$http.post('/api/users/' + this.editStaff.id, formData ,{headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + localStorage.token, 'Content-Type': 'multipart/form-data'}})

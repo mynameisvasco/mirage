@@ -50,7 +50,7 @@
 
 			<vs-spacer></vs-spacer>
 
-			<!-- NOTIFICATIONS -->
+			<!-- NOTIFICATIONS 
 			<vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer ml-4">
 				<feather-icon icon="BellIcon" class="cursor-pointer mt-1 sm:mr-6 mr-2" :badge="unreadNotifications.length"></feather-icon>
 				<vs-dropdown-menu class="notification-dropdown dropdown-custom vx-navbar-dropdown">
@@ -94,7 +94,7 @@
                         <span>View All Notifications</span>
                     </div>
 				</vs-dropdown-menu>
-			</vs-dropdown>
+			</vs-dropdown>-->
 
 			<!-- USER META -->
 			<div class="the-navbar__user-meta flex items-center">
@@ -111,7 +111,7 @@
 					<vs-dropdown-menu class="vx-navbar-dropdown">
 						<ul style="min-width: 9rem">
 							<li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"><feather-icon icon="UserIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Profile</span></li>
-                            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/logout')"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
+                            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="logout()"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
 						</ul>
 					</vs-dropdown-menu>
 				</vs-dropdown>
@@ -197,6 +197,10 @@ export default {
         },
     },
     methods: {
+        logout() {
+            localStorage.removeItem('token')
+            this.$router.push('/login')
+        },
         convertRankName(rank){
             if(rank == 0) {
                 return 'Client'

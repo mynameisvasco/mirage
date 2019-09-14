@@ -5,72 +5,121 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InvoiceRequest;
 use App\Invoice;
 use Carbon\Carbon;
+use App\CompanyInformation;
+use Storage;
+use App\Stat;
 
 class InvoiceController extends Controller
 {
     public function index()
     {
-        $invoices = Invoice::with('user')->latest()->get();
+        if(auth()->user()->isAdmin())
+        {
+            $invoices = Invoice::with('company')->with('ticket')->latest()->get();
+        }
+        else
+        {
+            $invoices = Invoice::with('company')->with('ticket')->latest()->where('user_id', auth()->user()->id)->get();
+        }
 
         return response()->json($invoices);
     }
 
     public function store(InvoiceRequest $request)
     {
+        if(auth()->user()->isClient() || auth()->user()->isSupport())
+        {
+            return response()->json(null, 401);
+        }
+
         $request->validate([
-            'name' => 'required|string',
+            'ticket_id' => 'required',
             'items' => 'required',
-            'description' => 'required',
-            'user_id' => 'required',
-            'status' => 'required'
+            'currency' => 'required',
+            'company_id' => 'required',
+            'status' => 'required',
+            'items' => 'required'
         ]);
         
+        $invoiceURL = md5(Carbon::now()->isoFormat('dddd, MMMM D, YYYY h:mm A'));
+
         //Save invoice on database
         $invoice = new Invoice();
-        $invoice->name = $request->name;
+        $invoice->ticket_id = $request->ticket_id;
         $invoice->items = json_encode($request->items);
         $invoice->taxes = json_encode(json_decode($request->taxes));
-        $invoice->description = $request->description;
+        $invoice->url =   $invoiceURL. '.pdf';
         $invoice->notes = $request->notes;
-        $invoice->user_id = $request->user_id;
+        $invoice->company_id = $request->company_id;
+        $invoice->currency = $request->currency;
         $invoice->staff_id = auth()->user()->id;
         $invoice->dueDate = Carbon::parse($request->dueDate);
         $invoice->status = $request->status;
-
-        //Calculate total money
+        //Calculate total money (without tax)
         foreach($request->items as $item)
         {
             $invoice->totalMoney += doubleval($item['price']);
         }
-
+               
+        $invoice->load('company');
+        $invoice->load('ticket');
         $invoice->save();
-        $invoice->load('user');
+        
+        $company = CompanyInformation::first();
+        
+        $invoicePDF = \ConsoleTVs\Invoices\Classes\Invoice::make();
+        $invoicePDF->currency = $invoice->currency;
+        $invoicePDF->dueDate = Carbon::parse($invoice->dueDate);
 
-        //Generate invoice file
-        $invoice = ConsoleTVs\Invoices\Classes\Invoice::make()
-                ->addItem('Test Item', 10.25, 2, 1412)
-                ->addItem('Test Item 2', 5, 2, 923)
-                ->addItem('Test Item 3', 15.55, 5, 42)
-                ->addItem('Test Item 4', 1.25, 1, 923)
-                ->addItem('Test Item 5', 3.12, 1, 3142)
-                ->addItem('Test Item 6', 6.41, 3, 452)
-                ->addItem('Test Item 7', 2.86, 1, 1526)
-                ->number(4021)
-                ->tax(21)
-                ->notes('Lrem ipsum dolor sit amet, consectetur adipiscing elit.')
-                ->customer([
-                    'name'      => 'Èrik Campobadal Forés',
-                    'id'        => '12345678A',
-                    'phone'     => '+34 123 456 789',
-                    'location'  => 'C / Unknown Street 1st',
-                    'zip'       => '08241',
-                    'city'      => 'Manresa',
-                    'country'   => 'Spain',
-                ])->save('public/myinvoicename.pdf');
+        foreach(json_decode($invoice->items) as $item)
+        {
+            $invoicePDF->addItem($item->name, $item->price);
+        }
+        if($invoice->taxes != '""')
+        {
+            foreach(json_decode($invoice->taxes) as $tax)
+            {
+                $invoicePDF->tax($tax->percentage);
+            }
+        }
+        $invoicePDF->number($invoice->id)
+        ->notes($invoice->notes)
+        ->customer([
+            'name'      => $invoice->company->name,
+            'id'        => $invoice->company->vat,
+            'phone'     => $invoice->company->email,
+            'location'  => 'C / Unknown Street 1st',
+        ])
+        ->business([
+            'name'        => $company->name,
+            'id'          => $company->number,
+            'phone'       => $company->phone,
+            'location'    => $company->address,
+        ])
+        ->date($invoice->created_at)
+        ->save('public/invoices/'. $invoiceURL .'.pdf');
+
+        //Increase the total invoices
+        $stat = Stat::where('name', 'numInvoices')->first();
+
+        if(!isset($stat))
+        {
+            $stat = new Stat();
+            $stat->name = 'numInvoices';
+            $stat->value = 1;
+            $stat->user_id = 0;
+            $stat->save();
+        }
+        else
+        {
+            $stat->value += 1;
+            $stat->save();
+        }
+
         return response()->json($invoice, 201);
     }
 
-    public function show($id)
+    /*public function show($id)
     {
         $invoice = Invoice::findOrFail($id);
 
@@ -90,5 +139,65 @@ class InvoiceController extends Controller
         Invoice::destroy($id);
 
         return response()->json(null, 204);
+    }*/
+
+    public function destroyBulk($ids)
+    {
+        $ids = json_decode(urldecode($ids));
+        foreach($ids as $id)
+        {
+            $invoice = Invoice::find($id);
+
+            Storage::delete('public/invoices/' . $invoice->url);
+            $invoice->destroy($id);
+        }
+
+        return response()->json($ids, 200);
+    }
+
+    public function pay($ids)
+    {
+        //Increase the total invoices
+        $stat = Stat::where('name', 'paidInvoices')->first();
+        $stat2 = Stat::where('name', 'totalMoney')->first();
+
+        $ids = json_decode(urldecode($ids));
+        foreach($ids as $id)
+        {
+            $invoice = Invoice::find($id);
+            $invoice->status = 1;
+            $invoice->save();
+
+            if(!isset($stat))
+            {
+                $stat = new Stat();
+                $stat->name = 'paidInvoices';
+                $stat->value = 1;
+                $stat->user_id = 0;
+                $stat->save();
+            }
+            else
+            {
+                $stat->value += 1;
+                $stat->save();
+            }
+
+            if(!isset($stat2))
+            {
+                $stat2 = new Stat();
+                $stat2->name = 'totalMoney';
+                $stat2->value = $invoice->totalMoney;
+                $stat2->user_id = 0;
+                $stat2->save();
+            }
+            else
+            {
+                $stat2->value += $invoice->totalMoney;
+                $stat2->save();
+            }
+
+        }
+
+        return response()->json($ids, 200);
     }
 }

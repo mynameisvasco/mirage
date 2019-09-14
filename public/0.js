@@ -464,6 +464,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    logout: function logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/login');
+    },
     convertRankName: function convertRankName(rank) {
       if (rank == 0) {
         return 'Client';
@@ -1941,127 +1945,6 @@ var render = function() {
             _c("vs-spacer"),
             _vm._v(" "),
             _c(
-              "vs-dropdown",
-              {
-                staticClass: "cursor-pointer ml-4",
-                attrs: { "vs-custom-content": "", "vs-trigger-click": "" }
-              },
-              [
-                _c("feather-icon", {
-                  staticClass: "cursor-pointer mt-1 sm:mr-6 mr-2",
-                  attrs: {
-                    icon: "BellIcon",
-                    badge: _vm.unreadNotifications.length
-                  }
-                }),
-                _vm._v(" "),
-                _c(
-                  "vs-dropdown-menu",
-                  {
-                    staticClass:
-                      "notification-dropdown dropdown-custom vx-navbar-dropdown"
-                  },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "notification-top text-center p-5 bg-primary text-white"
-                      },
-                      [
-                        _c("h3", { staticClass: "text-white" }, [
-                          _vm._v(
-                            _vm._s(_vm.unreadNotifications.length) + " New"
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("p", { staticClass: "opacity-75" }, [
-                          _vm._v("App Notifications")
-                        ])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "VuePerfectScrollbar",
-                      {
-                        ref: "mainSidebarPs",
-                        staticClass:
-                          "scroll-area--nofications-dropdown p-0 mb-10",
-                        attrs: { settings: _vm.settings }
-                      },
-                      [
-                        _c(
-                          "ul",
-                          { staticClass: "bordered-items" },
-                          _vm._l(_vm.unreadNotifications, function(ntf) {
-                            return _c(
-                              "li",
-                              {
-                                key: ntf.index,
-                                staticClass:
-                                  "flex justify-between px-4 py-4 notification cursor-pointer"
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  { staticClass: "flex items-start" },
-                                  [
-                                    _c("feather-icon", {
-                                      attrs: {
-                                        icon: ntf.icon,
-                                        svgClasses: [
-                                          "text-" + ntf.category,
-                                          "stroke-current mr-1 h-6 w-6"
-                                        ]
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("div", { staticClass: "mx-2" }, [
-                                      _c(
-                                        "span",
-                                        {
-                                          staticClass:
-                                            "font-medium block notification-title",
-                                          class: ["text-" + ntf.category]
-                                        },
-                                        [_vm._v(_vm._s(ntf.title))]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("small", [_vm._v(_vm._s(ntf.msg))])
-                                    ])
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "small",
-                                  { staticClass: "mt-1 whitespace-no-wrap" },
-                                  [_vm._v(_vm._s(_vm.elapsedTime(ntf.time)))]
-                                )
-                              ]
-                            )
-                          }),
-                          0
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "\n                        checkout-footer\n                        fixed\n                        bottom-0\n                        rounded-b-lg\n                        text-primary\n                        w-full\n                        p-2\n                        font-semibold\n                        text-center\n                        border\n                        border-b-0\n                        border-l-0\n                        border-r-0\n                        border-solid\n                        d-theme-border-grey-light\n                        cursor-pointer"
-                      },
-                      [_c("span", [_vm._v("View All Notifications")])]
-                    )
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
               "div",
               { staticClass: "the-navbar__user-meta flex items-center" },
               [
@@ -2157,7 +2040,7 @@ var render = function() {
                                 "flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white",
                               on: {
                                 click: function($event) {
-                                  return _vm.$router.push("/logout")
+                                  return _vm.logout()
                                 }
                               }
                             },
@@ -3444,7 +3327,7 @@ __webpack_require__.r(__webpack_exports__);
 }, {
   url: "/admin/tickets",
   name: "Tickets",
-  slug: "Tickets",
+  slug: "tickets",
   icon: "MessageSquareIcon"
 }, {
   url: "/admin/invoices",
@@ -3456,8 +3339,12 @@ __webpack_require__.r(__webpack_exports__);
   // You can omit this
   name: "Users",
   slug: "users",
-  icon: "UserIcon",
+  icon: "UsersIcon",
   submenu: [{
+    url: '/admin/companies',
+    name: "Companies",
+    slug: "users-companies"
+  }, {
     url: '/admin/clients',
     name: "Clients",
     slug: "users-clients"
@@ -3504,11 +3391,6 @@ __webpack_require__.r(__webpack_exports__);
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 /* harmony default export */ __webpack_exports__["default"] = ([{
-  url: "/client/home",
-  name: "Home",
-  slug: "home",
-  icon: "HomeIcon"
-}, {
   url: "/client/tickets",
   name: "Tickets",
   slug: "Tickets",
@@ -3519,7 +3401,7 @@ __webpack_require__.r(__webpack_exports__);
   slug: "invoices",
   icon: "BookmarkIcon"
 }, {
-  url: '/client/profile',
+  url: '/profile',
   name: "Profile",
   slug: "profile",
   icon: "UserIcon"
@@ -3603,15 +3485,20 @@ __webpack_require__.r(__webpack_exports__);
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 /* harmony default export */ __webpack_exports__["default"] = ([{
-  url: "/home/support",
+  url: "/support/home",
   name: "Home",
   slug: "home",
   icon: "HomeIcon"
 }, {
-  url: "/tickets",
+  url: "/admin/tickets",
   name: "Tickets",
   slug: "Tickets",
   icon: "MessageSquareIcon"
+}, {
+  url: "/profile",
+  name: "Profile",
+  slug: "Profile",
+  icon: "UserIcon"
 }]);
 
 /***/ }),

@@ -4237,6 +4237,14 @@
   }
 }
 
+.actionBtn .vs-icon{
+  display: inline !important;
+}
+
+.h-100{
+  height:100% !important;
+}
+
 @media (min-width: 576px)
  {
   .sm\:sr-only

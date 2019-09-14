@@ -22,7 +22,7 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed',
-            'rank' => 'required'
+            'rank' => 'required',
         ]);
         
         $user = new User();
@@ -30,8 +30,10 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->rank = $request->rank;
-        $user->vat = $request->vat;
-
+        if($request->company_id)
+        {
+            $user->company_id = $request->company_id;
+        }
         if($request->hasFile('picture'))
         {
             $request->picture->storeAs('public/avatars', md5($request->email) . '.' . $request->picture->getClientOriginalExtension());
@@ -41,8 +43,9 @@ class AuthController extends Controller
         {
             $user->picture = null;
         }
-
+        
         $user->save();
+        $user->load('company');
         return response()->json($user, 201);
     }
   
@@ -117,7 +120,7 @@ class AuthController extends Controller
             return response()->json(null, 401); 
         }
         
-        $user = User::find($id);
+        $user = User::with('company')->find($id);
 
         return response()->json($user);
     }
@@ -129,10 +132,14 @@ class AuthController extends Controller
             return response()->json(null, 401);
         }
 
+        $request->validate([
+            'name' => 'required|string',
+            'email' => "unique:users,email,$id,id",
+        ]);
+        
         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->vat = $request->vat;
         if(isset($request->rank))
         {
             $user->rank = $request->rank;
@@ -148,6 +155,7 @@ class AuthController extends Controller
         }
 
         $user->save();
+        $user->load('company');
         return response()->json($user, 200);
     }
 
@@ -164,7 +172,7 @@ class AuthController extends Controller
 
     public function users(Request $request, $rank = 0)
     {
-        if(!auth()->user()->isAdmin())
+        if(auth()->user()->isClient())
         {
             return response()->json(null, 401);
         }
@@ -174,7 +182,7 @@ class AuthController extends Controller
         }
         else
         {
-            $users = User::where('rank', 0)->get();
+            $users = User::with('company')->where('rank', 0)->get();
         }
 
         return response()->json($users, 200);

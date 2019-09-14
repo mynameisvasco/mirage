@@ -20,15 +20,21 @@
 
 export default [
   {
-    url: "/home/support",
+    url: "/support/home",
     name: "Home",
     slug: "home",
     icon: "HomeIcon",
   },
   {
-    url: "/tickets",
+    url: "/admin/tickets",
     name: "Tickets",
     slug: "Tickets",
     icon: "MessageSquareIcon",
   },
+  {
+    url: "/profile",
+    name: "Profile",
+    slug: "Profile",
+    icon: "UserIcon",
+  }
 ]

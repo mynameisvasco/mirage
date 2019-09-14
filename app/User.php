@@ -47,6 +47,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function company()
+    {
+        return $this->belongsTo('App\Company');
+    }
+
     public function isOnline()
     {
         return Cache::has('user-is-online-' . $this->id);

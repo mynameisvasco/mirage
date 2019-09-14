@@ -22,6 +22,7 @@ class CreateCompanyInformationTable extends Migration
             $table->string('phone')->default('+351 000 000 000');
             $table->integer('number')->default('0000000');
             $table->json('taxes')->default('[]');
+            $table->json('items')->default('[]');
             $table->timestamps();
         });
     }

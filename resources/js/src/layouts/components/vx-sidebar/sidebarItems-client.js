@@ -20,12 +20,6 @@
 
 export default [
   {
-    url: "/client/home",
-    name: "Home",
-    slug: "home",
-    icon: "HomeIcon",
-  },
-  {
     url: "/client/tickets",
     name: "Tickets",
     slug: "Tickets",
@@ -38,7 +32,7 @@ export default [
     icon: "BookmarkIcon",
   },
 	{
-		url: '/client/profile',
+		url: '/profile',
 		name: "Profile",
 		slug: "profile",
 		icon: "UserIcon",
