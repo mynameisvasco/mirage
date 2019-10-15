@@ -12,7 +12,7 @@
 						</template>
 						<template slot="thead">
 							<vs-th>
-								Name
+								Company Name
 							</vs-th>
                             <vs-th>
 								Due Date
@@ -29,8 +29,20 @@
 						<template slot-scope="{data}">
 							<vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
 
-								<vs-td :data="data[indextr].name">
-									{{data[indextr].name}}
+								<vs-td :data="data[indextr].company.name">
+									<div class="grid-layout-container alignment-block">
+										<vs-row
+											vs-align="center"
+											vs-type="flex" vs-w="12" class="mt-3">
+											<vs-col class="mb-4" vs-type="flex" vs-align="center" vs-lg="3" vs-md="6" vs-sm="6" vs-xs="12">
+												<vs-avatar v-if="data[indextr].company.picture" :src="'/storage/companies/' + data[indextr].company.picture "/> 
+												<vs-avatar v-if="!data[indextr].company.picture" color="primary" :text="data[indextr].company.name"/>
+											</vs-col>
+											<vs-col vs-type="flex" vs-align="center" vs-lg="4" vs-md="6" vs-sm="6" vs-xs="12">
+												<span style="margin-top:-10px;">{{data[indextr].company.name}}</span>
+											</vs-col>
+										</vs-row>
+									</div>
 								</vs-td>
 
                                 <vs-td :data="data[indextr].dueDate">
@@ -57,7 +69,7 @@
 </template>
 
 <script>
-
+import store from '../../store/store'
 export default {
 	data() {
 		return {
@@ -101,6 +113,15 @@ export default {
 			return this.$store.state.AppActiveUser
 		}
 	},
+
+	 //Only admin clients and financial clients can access this route
+	beforeRouteEnter : (to, from, next) => {
+		if(store.state.AppActiveUser.company_rank != 3 && store.state.AppActiveUser.company_rank != 2) {
+			next('/login')
+		} else {
+			next()
+		}
+	}
 	
 }
 </script>

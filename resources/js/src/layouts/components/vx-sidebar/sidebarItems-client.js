@@ -25,12 +25,6 @@ export default [
     slug: "Tickets",
     icon: "MessageSquareIcon",
   },
-  {
-    url: "/client/invoices",
-    name: "Invoices",
-    slug: "invoices",
-    icon: "BookmarkIcon",
-  },
 	{
 		url: '/profile',
 		name: "Profile",

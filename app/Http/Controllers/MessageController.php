@@ -15,7 +15,7 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $messages = Message::latest()->with('user')->with('ticket')->get();
+        $messages = Message::latest()->with('user')->with('staff')->with('ticket')->get();
 
         return response()->json($messages);
     }
@@ -36,7 +36,7 @@ class MessageController extends Controller
             $ticket->user_id = $request->user_id; //This is always the user_id of the client assigned to that ticket
             $ticket->staff_id = $request->staff_id; //This is always the user_id of the staff assigned to that ticket
             $ticket->status = 0;
-            $ticket->company_id = $ticket->user->company->id;
+            $ticket->company_id = User::find($request->user_id)->company_id;
             $ticket->save();
 
             //Create the message

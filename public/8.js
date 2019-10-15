@@ -498,23 +498,12 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "vs-row",
-                        {
-                          attrs: {
-                            "vs-justify": "center",
-                            "vs-align": "center"
-                          }
-                        },
                         [
                           _c(
                             "vs-col",
                             {
                               staticClass: "mt-4",
-                              attrs: {
-                                "vs-type": "flex",
-                                "vs-justify": "center",
-                                "vs-align": "center",
-                                "vs-w": "12"
-                              }
+                              attrs: { "vs-type": "flex", "vs-w": "12" }
                             },
                             [
                               _c(
@@ -749,23 +738,12 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "vs-row",
-                        {
-                          attrs: {
-                            "vs-justify": "center",
-                            "vs-align": "center"
-                          }
-                        },
                         [
                           _c(
                             "vs-col",
                             {
                               staticClass: "mt-5",
-                              attrs: {
-                                "vs-type": "flex",
-                                "vs-justify": "center",
-                                "vs-align": "center",
-                                "vs-w": "12"
-                              }
+                              attrs: { "vs-type": "flex", "vs-w": "12" }
                             },
                             [
                               _c(
@@ -1000,23 +978,12 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "vs-row",
-                        {
-                          attrs: {
-                            "vs-justify": "center",
-                            "vs-align": "center"
-                          }
-                        },
                         [
                           _c(
                             "vs-col",
                             {
                               staticClass: "mt-5",
-                              attrs: {
-                                "vs-type": "flex",
-                                "vs-justify": "center",
-                                "vs-align": "center",
-                                "vs-w": "12"
-                              }
+                              attrs: { "vs-type": "flex", "vs-w": "12" }
                             },
                             [
                               _c(

@@ -126,6 +126,7 @@
 </template>
 
 <script>
+import store from '../../store/store'
 export default {
 	data() {
 		return {
@@ -286,5 +287,13 @@ export default {
 	mounted() {
 		this.getStaffs()
 	},
+	//Only admins and financial can access this route
+	beforeRouteEnter : (to, from, next) => {
+		if(store.state.AppActiveUser.rank != 3) {
+			next('/login')
+		} else {
+			next()
+		}
+	}
 }
 </script>

@@ -230,6 +230,7 @@ export default {
 			this.$http.get('/api/invoices', {headers: { 'Authorization': 'Bearer ' + localStorage.token }})
 			.then((response) => {
 				this.invoices = response.data
+				console.log(this.invoices)
 			})
 			.catch((error) =>{
 				console.log(error)

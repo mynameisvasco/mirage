@@ -32,7 +32,7 @@
 			</vs-row>
 		</vs-popup>
 		<vs-popup class="holamundo" :title="viewTicket.title" :active.sync="editPopupActive">
-			<div :key="viewTicket.message.id" v-for="message in viewTicket.message" style="margin-bottom:50px;">
+			<div :key="viewTicket.messages.id" v-for="message in viewTicket.messages" style="margin-bottom:50px;">
 				<vs-row>
 					<vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="2">
 						<vs-avatar v-if="message.user.picture" :src="'/storage/avatars/' + message.user.picture "/> 
@@ -53,7 +53,7 @@
 				</vs-col>
 			</vs-row>
 		</vs-popup>
-		<div class="w-full">
+		<div class="w-full mt-6">
 			<vs-button icon-pack="feather" @click="newPopupActive = true" class="mb-4" icon="icon-plus">New Ticket</vs-button>
 			<vs-table search max-items="10" pagination :data="tickets">
 				<template slot="header">
@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import store from '../../store/store'
 export default {
 	data() {
 		return {
@@ -141,6 +142,7 @@ export default {
 			this.$http.get('/api/tickets/' + id, {headers: { 'Authorization': 'Bearer ' + localStorage.token }})
 			.then((response) => {
 				this.viewTicket = response.data
+				console.log(this.viewTicket)
 			})
 			.catch((error) =>{
 				console.log(error)
@@ -164,7 +166,7 @@ export default {
 				{headers: { 'Authorization': 'Bearer ' + localStorage.token }}
 			)
 			.then((response) => {
-				this.viewTicket.message.push(response.data)
+				this.viewTicket.messages.push(response.data)
 				for(let i = 0; i < this.tickets.length; i++) {
 					if(this.tickets[i].id == this.viewTicket.id) {
 						this.$set(this.tickets[i], 'status', response.data.ticket.status)
@@ -213,5 +215,15 @@ export default {
 			this.getTicket(this.$route.fullPath.split("?")[1])
 		}
 	},
+
+	//Only admin clients and support clients can access this route
+	beforeRouteEnter : (to, from, next) => {
+		if(store.state.AppActiveUser.company_rank != 3 && store.state.AppActiveUser.company_rank != 1) {
+			next('/login')
+		} else {
+			next()
+		}
+	}
+	
 }
 </script>

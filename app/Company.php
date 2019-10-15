@@ -22,5 +22,10 @@ class Company extends Model
     {
         return $this->hasMany('App\Item');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany('App\Ticket');
+    }
     
 }

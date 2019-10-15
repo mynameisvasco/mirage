@@ -54745,7 +54745,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
     // =============================================================================
     path: '',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0)]).then(__webpack_require__.bind(null, /*! @/layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(2), __webpack_require__.e(1)]).then(__webpack_require__.bind(null, /*! @/layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
     },
     children: [// =============================================================================
     // Common Routes
@@ -54763,13 +54763,25 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/client/tickets',
       name: 'tickets-client',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! @/views/client/Tickets.vue */ "./resources/js/src/views/client/Tickets.vue"));
+        return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! @/views/client/Tickets.vue */ "./resources/js/src/views/client/Tickets.vue"));
       }
     }, {
       path: '/client/invoices',
       name: 'invoices-client',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! @/views/client/Invoices.vue */ "./resources/js/src/views/client/Invoices.vue"));
+        return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! @/views/client/Invoices.vue */ "./resources/js/src/views/client/Invoices.vue"));
+      }
+    }, {
+      path: '/client/admin/company',
+      name: 'company-client',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! @/views/client/Company.vue */ "./resources/js/src/views/client/Company.vue"));
+      }
+    }, {
+      path: '/client/admin/employees',
+      name: 'employees-client',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! @/views/client/Employees.vue */ "./resources/js/src/views/client/Employees.vue"));
       }
     }, // =============================================================================
     // Support Routes
@@ -54778,7 +54790,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/support/home',
       name: 'home-support',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! @/views/support/Home.vue */ "./resources/js/src/views/support/Home.vue"));
+        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! @/views/support/Home.vue */ "./resources/js/src/views/support/Home.vue"));
       }
     }, // =============================================================================
     // Admin Routes
@@ -54787,7 +54799,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/admin/home',
       name: 'home-admin',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! @/views/admin/Home.vue */ "./resources/js/src/views/admin/Home.vue"));
+        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! @/views/admin/Home.vue */ "./resources/js/src/views/admin/Home.vue"));
       }
     }, {
       path: '/admin/tickets',
@@ -54802,12 +54814,6 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
         return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! @/views/admin/Companies.vue */ "./resources/js/src/views/admin/Companies.vue"));
       }
     }, {
-      path: '/admin/clients',
-      name: 'clients-admin',
-      component: function component() {
-        return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! @/views/admin/Clients.vue */ "./resources/js/src/views/admin/Clients.vue"));
-      }
-    }, {
       path: '/admin/staff',
       name: 'staff-admin',
       component: function component() {
@@ -54817,7 +54823,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/admin/invoices',
       name: 'invoices-admin',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(16), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! @/views/admin/Invoices.vue */ "./resources/js/src/views/admin/Invoices.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(18), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! @/views/admin/Invoices.vue */ "./resources/js/src/views/admin/Invoices.vue"));
       }
     }, {
       path: '/admin/company',
@@ -54832,7 +54838,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   {
     path: '',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! @/layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
+      return __webpack_require__.e(/*! import() */ 17).then(__webpack_require__.bind(null, /*! @/layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
     },
     children: [// =============================================================================
     // PAGES
@@ -54841,13 +54847,19 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
       path: '/login',
       name: 'login',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
+        return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
+      }
+    }, {
+      path: '',
+      name: 'login',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
       }
     }, {
       path: '/error-404',
       name: 'pageError404',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! @/views/pages/Error404.vue */ "./resources/js/src/views/pages/Error404.vue"));
+        return __webpack_require__.e(/*! import() */ 16).then(__webpack_require__.bind(null, /*! @/views/pages/Error404.vue */ "./resources/js/src/views/pages/Error404.vue"));
       }
     }]
   }, // Redirect to 404 page, if no match found
@@ -54881,11 +54893,15 @@ function () {
                 if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.rank == 3) {
                   next('/admin/home');
                 } else if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.rank == 2) {
-                  next('/financial/home');
+                  next('/admin/invoices');
                 } else if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.rank == 1) {
                   next('/support/home');
                 } else if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.rank == 0) {
-                  next('/client/tickets');
+                  if (_store_store__WEBPACK_IMPORTED_MODULE_4__["default"].state.AppActiveUser.company_rank == 0) {
+                    next('/client/tickets');
+                  } else {
+                    next('/client/invoices');
+                  }
                 }
               } else {
                 next();
@@ -55210,7 +55226,9 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     email: null,
     picture: null,
     rank: null,
-    authenticated: false
+    authenticated: false,
+    company_id: null,
+    company_rank: null
   }],
   getUserInfo: function () {
     var _getUserInfo = _asyncToGenerator(
@@ -55241,6 +55259,8 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
                 _this.user.email = response.data.email;
                 _this.user.picture = response.data.picture;
                 _this.user.rank = response.data.rank;
+                _this.user.company_id = response.data.company_id;
+                _this.user.company_rank = response.data.company_rank;
                 _this.user.authenticated = true;
               })["catch"](function () {
                 _this.user.authenticated = false;

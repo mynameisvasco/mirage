@@ -56,6 +56,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -80,8 +91,41 @@ __webpack_require__.r(__webpack_exports__);
     onFileChange: function onFileChange(event) {
       this.profile.picture = event.target.files[0];
     },
-    updateProfile: function updateProfile() {
+    updatePassword: function updatePassword() {
       var _this2 = this;
+
+      var formData = new FormData();
+      formData.append('password', this.profile.password);
+      formData.append('password_confirmation', this.profile.password_confirmation);
+      this.$http.post('/api/users/changepassword', formData, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.token,
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        _this2.$vs.notify({
+          title: 'Success!',
+          text: 'Password was updated with success',
+          color: 'success',
+          position: 'top-right'
+        });
+      })["catch"](function (error) {
+        //Show error notification
+        Object.keys(error['response'].data.errors).forEach(function (key) {
+          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
+
+          _this2.$vs.notify({
+            title: 'Error!',
+            text: message,
+            color: 'danger',
+            position: 'top-right'
+          });
+        });
+      });
+    },
+    updateProfile: function updateProfile() {
+      var _this3 = this;
 
       var formData = new FormData();
       formData.append('picture', this.profile.picture);
@@ -97,11 +141,11 @@ __webpack_require__.r(__webpack_exports__);
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (response) {
-        _this2.profile = response.data;
+        _this3.profile = response.data;
 
-        _this2.$vs.notify({
+        _this3.$vs.notify({
           title: 'Success!',
-          text: 'Client was edited with success',
+          text: 'Profile was updated with success',
           color: 'success',
           position: 'top-right'
         });
@@ -110,7 +154,7 @@ __webpack_require__.r(__webpack_exports__);
         Object.keys(error['response'].data.errors).forEach(function (key) {
           var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
 
-          _this2.$vs.notify({
+          _this3.$vs.notify({
             title: 'Error!',
             text: message,
             color: 'danger',
@@ -168,7 +212,7 @@ var render = function() {
             [
               _c(
                 "div",
-                { staticClass: "flex" },
+                { staticClass: "flex h-100" },
                 [
                   _c(
                     "vx-card",
@@ -242,7 +286,12 @@ var render = function() {
                             "vs-col",
                             {
                               staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
+                              attrs: {
+                                "vs-align": "center",
+                                "vs-sm": "12",
+                                "vs-md": "6",
+                                "vs-lg": "6"
+                              }
                             },
                             [
                               _c("vs-input", {
@@ -270,35 +319,12 @@ var render = function() {
                             "vs-col",
                             {
                               staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-map-pin",
-                                  "icon-no-border": "",
-                                  label: "Address"
-                                },
-                                model: {
-                                  value: _vm.profile.address,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.profile, "address", $$v)
-                                  },
-                                  expression: "profile.address"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
+                              attrs: {
+                                "vs-align": "center",
+                                "vs-sm": "12",
+                                "vs-md": "6",
+                                "vs-lg": "6"
+                              }
                             },
                             [
                               _c("vs-input", {
@@ -320,34 +346,6 @@ var render = function() {
                               })
                             ],
                             1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-hash",
-                                  "icon-no-border": "",
-                                  label: "Tax No"
-                                },
-                                model: {
-                                  value: _vm.profile.vat,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.profile, "vat", $$v)
-                                  },
-                                  expression: "profile.vat"
-                                }
-                              })
-                            ],
-                            1
                           )
                         ],
                         1
@@ -355,12 +353,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "vs-row",
-                        {
-                          attrs: {
-                            "vs-justify": "center",
-                            "vs-align": "center"
-                          }
-                        },
+                        { staticClass: "mb-6" },
                         [
                           _c(
                             "vs-col",
@@ -368,9 +361,9 @@ var render = function() {
                               staticClass: "mt-4",
                               attrs: {
                                 "vs-type": "flex",
-                                "vs-justify": "center",
-                                "vs-align": "center",
-                                "vs-w": "12"
+                                "vs-sm": "12",
+                                "vs-md": "6",
+                                "vs-lg": "6"
                               }
                             },
                             [
@@ -389,6 +382,139 @@ var render = function() {
                                   }
                                 },
                                 [_vm._v("Save")]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "vs-col",
+            {
+              staticClass: "mb-4",
+              attrs: { "vs-w": "12", "vs-md": "12", "vs-lg": "6" }
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "h-100 flex" },
+                [
+                  _c(
+                    "vx-card",
+                    [
+                      _c(
+                        "vs-row",
+                        { staticClass: "mt-6" },
+                        [
+                          _c(
+                            "vs-col",
+                            {
+                              staticClass: "mb-4",
+                              attrs: {
+                                "vs-align": "center",
+                                "vs-sm": "12",
+                                "vs-md": "6",
+                                "vs-lg": "6"
+                              }
+                            },
+                            [
+                              _c("vs-input", {
+                                staticClass: "w-full",
+                                attrs: {
+                                  type: "password",
+                                  autocomplete: "new-password",
+                                  "icon-pack": "feather",
+                                  icon: "icon-lock",
+                                  "icon-no-border": "",
+                                  label: "Password"
+                                },
+                                model: {
+                                  value: _vm.profile.password,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.profile, "password", $$v)
+                                  },
+                                  expression: "profile.password"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "vs-col",
+                            {
+                              staticClass: "mb-4",
+                              attrs: {
+                                "vs-align": "center",
+                                "vs-sm": "12",
+                                "vs-md": "6",
+                                "vs-lg": "6"
+                              }
+                            },
+                            [
+                              _c("vs-input", {
+                                staticClass: "w-full",
+                                attrs: {
+                                  type: "password",
+                                  autocomplete: "new-password",
+                                  "icon-pack": "feather",
+                                  icon: "icon-lock",
+                                  "icon-no-border": "",
+                                  label: "Password Confirmation"
+                                },
+                                model: {
+                                  value: _vm.profile.password_confirmation,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.profile,
+                                      "password_confirmation",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "profile.password_confirmation"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "vs-col",
+                            {
+                              staticClass: "mt-4 mb-6",
+                              attrs: {
+                                "vs-type": "flex",
+                                "vs-sm": "12",
+                                "vs-md": "6",
+                                "vs-lg": "6"
+                              }
+                            },
+                            [
+                              _c(
+                                "vs-button",
+                                {
+                                  attrs: {
+                                    "icon-pack": "feather",
+                                    icon: "icon-lock",
+                                    color: "primary"
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.updatePassword()
+                                    }
+                                  }
+                                },
+                                [_vm._v("Change Password")]
                               )
                             ],
                             1

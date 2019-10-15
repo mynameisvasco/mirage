@@ -8,7 +8,7 @@ class Ticket extends Model
 {
     protected $guarded = ['id'];
 
-    public function message()
+    public function messages()
     {
         return $this->hasMany('App\Message');
     }

@@ -49,11 +49,6 @@ export default [
 				slug: "users-companies",
 			},
 			{
-				url: '/admin/clients',
-				name: "Clients",
-				slug: "users-clients",
-			},
-			{
 				url: '/admin/staff',
 				name: "Staff",
 				slug: "users-staff",
@@ -65,5 +60,11 @@ export default [
     name: "Company",
     slug: "company",
     icon: "TruckIcon",
+  },
+  {
+    url: "/profile",
+    name: "Profile",
+    slug: "profile",
+    icon: "UserIcon",
   },
 ]

@@ -66,6 +66,8 @@ import sidebarItemsAdmin from "@/layouts/components/vx-sidebar/sidebarItems-admi
 import sidebarItemsFinancial from "@/layouts/components/vx-sidebar/sidebarItems-financial.js";
 import sidebarItemsSupport from "@/layouts/components/vx-sidebar/sidebarItems-support.js";
 import sidebarItemsClient from "@/layouts/components/vx-sidebar/sidebarItems-client.js";
+import sidebarItemsClientFinancial from "@/layouts/components/vx-sidebar/sidebarItems-client-financial.js";
+import sidebarItemsClientAdmin from "@/layouts/components/vx-sidebar/sidebarItems-client-admin.js";
 import store from '../../store/store'
 import BackToTop from 'vue-backtotop'
 
@@ -182,7 +184,13 @@ export default {
         } else if(store.state.AppActiveUser.rank == 1) {
             this.sidebarItems = sidebarItemsSupport
         } else {
-            this.sidebarItems = sidebarItemsClient
+            if(store.state.AppActiveUser.company_rank == 1) {
+                this.sidebarItems = sidebarItemsClient
+            } else if (store.state.AppActiveUser.company_rank == 2) {
+                this.sidebarItems = sidebarItemsClientFinancial
+            } else if (store.state.AppActiveUser.company_rank == 3) {
+                this.sidebarItems = sidebarItemsClientAdmin
+            }
         }
     }
 }

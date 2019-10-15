@@ -56,7 +56,7 @@
 				<vs-tabs alignment="center">
 					<vs-tab label="Messages" icon-pack="feather" icon="icon-message-square">
 						<div class="mt-4">
-							<div :key="viewTicket.message.id" v-for="message in viewTicket.message" style="margin-bottom:50px;">
+							<div :key="viewTicket.messages.id" v-for="message in viewTicket.messages" style="margin-bottom:50px;">
 								<vs-row>
 									<vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="2">
 										<vs-avatar v-if="message.user.picture" :src="'/storage/avatars/' + message.user.picture "/> 
@@ -234,7 +234,7 @@ export default {
 				{headers: { 'Authorization': 'Bearer ' + localStorage.token }}
 			)
 			.then((response) => {
-				this.viewTicket.message.push(response.data)
+				this.viewTicket.messages.push(response.data)
 				for(let i = 0; i < this.tickets.length; i++) {
 					if(this.tickets[i].id == this.viewTicket.id) {
 						this.$set(this.tickets[i], 'status', response.data.ticket.status)

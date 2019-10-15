@@ -17,8 +17,8 @@ class CreateTicketsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->integer('user_id');
-            $table->integer('staff_id')->default(0);
             $table->integer('company_id');
+            $table->integer('staff_id')->default(0);
             $table->integer('working_minutes')->default(0);
             $table->integer('status');
             $table->timestamps();

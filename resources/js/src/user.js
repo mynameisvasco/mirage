@@ -9,6 +9,8 @@ export default {
         picture: null,
         rank: null,
         authenticated: false,
+        company_id: null,
+        company_rank: null,
     }],
 
     async getUserInfo() {
@@ -27,6 +29,8 @@ export default {
             this.user.email = response.data.email
             this.user.picture = response.data.picture
             this.user.rank = response.data.rank
+            this.user.company_id = response.data.company_id
+            this.user.company_rank = response.data.company_rank
             this.user.authenticated = true
         })
         .catch(() => {

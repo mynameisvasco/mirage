@@ -16,7 +16,7 @@ class TicketController extends Controller
         }
         else if(auth()->user()->isSupport())
         {
-            $tickets = Ticket::orderBy('status', 'asc')->where('staff_id', 0)->orWhere('staff_id', auth()->user()->id)->with('user')->get();
+            $tickets = Ticket::orderBy('status', 'asc')->where('staff_id', 0)->orWhere('staff_id', auth()->user()->id)->with('user.company')->get();
         }
         else if(auth()->user()->isAdmin())
         {
@@ -39,7 +39,7 @@ class TicketController extends Controller
 
     public function show($id)
     {
-        $ticket = Ticket::with('message.user')->with('user.company.items')->findOrFail($id);
+        $ticket = Ticket::with('messages')->with('messages.user')->with('user.company.items')->findOrFail($id);
         if(auth()->user()->isClient() || auth()->user()->isFinancial()) 
         {
             if($ticket->user_id != auth()->user()->id)
@@ -97,7 +97,7 @@ class TicketController extends Controller
             }
         }
 
-        foreach($ticket->message as $message)
+        foreach($ticket->messages as $message)
         {
             $message->delete();
         }

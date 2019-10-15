@@ -268,7 +268,7 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        _this4.viewTicket.message.push(response.data);
+        _this4.viewTicket.messages.push(response.data);
 
         for (var i = 0; i < _this4.tickets.length; i++) {
           if (_this4.tickets[i].id == _this4.viewTicket.id) {
@@ -762,11 +762,11 @@ var render = function() {
                       _c(
                         "div",
                         { staticClass: "mt-4" },
-                        _vm._l(_vm.viewTicket.message, function(message) {
+                        _vm._l(_vm.viewTicket.messages, function(message) {
                           return _c(
                             "div",
                             {
-                              key: _vm.viewTicket.message.id,
+                              key: _vm.viewTicket.messages.id,
                               staticStyle: { "margin-bottom": "50px" }
                             },
                             [

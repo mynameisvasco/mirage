@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
+use Hash;
 
 class AuthController extends Controller
 {
@@ -30,9 +31,21 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->rank = $request->rank;
+        if($request->company_rank)
+        {
+            $user->company_rank = $request->company_rank;
+        }
+        else
+        {
+            $user->company_rank = 3;
+        }
         if($request->company_id)
         {
             $user->company_id = $request->company_id;
+        }
+        if(auth()->user()->company_rank == 3)
+        {
+            $user->company_id = auth()->user()->company_id;
         }
         if($request->hasFile('picture'))
         {
@@ -117,7 +130,10 @@ class AuthController extends Controller
     {
         if(auth()->user()->isClient())
         {
-            return response()->json(null, 401); 
+            if(auth()->user()->company_rank != 3)
+            {
+                return response()->json(null, 401); 
+            }
         }
         
         $user = User::with('company')->find($id);
@@ -128,6 +144,11 @@ class AuthController extends Controller
     public function editUser(Request $request, $id)
     {
         if(auth()->user()->isClient() && auth()->user()->id != $id)
+        {
+            return response()->json(null, 401);
+        }
+
+        if(auth()->user()->company_rank != 3 && $request->company_id != auth()->user()->company_id)
         {
             return response()->json(null, 401);
         }
@@ -161,28 +182,50 @@ class AuthController extends Controller
 
     public function deleteUser($id)
     {
-        if(!auth()->user()->isAdmin())
-        {
-            return response()->json(null, 401);
-        }
+        
+        $user = User::find($id);
+        $user->delete();
 
-        $user = User::find($id)->delete();
         return response()->json("User deleted with success", 200);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = User::find(auth()->user()->id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json("Password updated with success", 200);
+
     }
 
     public function users(Request $request, $rank = 0)
     {
         if(auth()->user()->isClient())
         {
-            return response()->json(null, 401);
-        }
-        if($rank == 'staff')
-        {
-            $users = User::where('rank', '>', 0)->get();
+            if(auth()->user()->company_rank != 3)
+            {
+                return response()->json(null, 401);
+            }
+            else
+            {
+                $users = User::where('company_id', auth()->user()->company_id)->with('company')->get();
+            }
         }
         else
         {
-            $users = User::with('company')->where('rank', 0)->get();
+            if($rank == 'staff')
+            {
+                $users = User::where('rank', '>', 0)->get();
+            }
+            else
+            {
+                $users = User::with('company')->where('rank', 0)->get();
+            }
         }
 
         return response()->json($users, 200);

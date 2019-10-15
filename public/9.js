@@ -268,6 +268,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         _this3.invoices = response.data;
+        console.log(_this3.invoices);
       })["catch"](function (error) {
         console.log(error);
       });

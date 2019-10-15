@@ -38,8 +38,8 @@
                                 </vs-input>
                             </vs-col>
                         </vs-row>
-                        <vs-row vs-justify="center" vs-align="center">
-				            <vs-col class="mt-4" vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                        <vs-row>
+				            <vs-col class="mt-4" vs-type="flex" vs-w="12">
                                 <vs-button @click="updateCompanyInfo()" icon-pack="feather" icon="icon-save" color="primary">Save</vs-button>
                             </vs-col>
                         </vs-row>
@@ -73,8 +73,8 @@
                                 </vs-list>
                             </vs-col>
                         </vs-row>
-                        <vs-row vs-justify="center" vs-align="center">
-				            <vs-col class="mt-5" vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                        <vs-row>
+				            <vs-col class="mt-5" vs-type="flex" vs-w="12">
                                 <vs-button @click="updateCompanyInfo()" icon-pack="feather" icon="icon-save" color="primary">Save</vs-button>
                             </vs-col>
                         </vs-row>
@@ -108,8 +108,8 @@
                                 </vs-list>
                             </vs-col>
                         </vs-row>
-                        <vs-row vs-justify="center" vs-align="center">
-				            <vs-col class="mt-5" vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                        <vs-row>
+				            <vs-col class="mt-5" vs-type="flex" vs-w="12">
                                 <vs-button @click="updateCompanyInfo()" icon-pack="feather" icon="icon-save" color="primary">Save</vs-button>
                             </vs-col>
                         </vs-row>

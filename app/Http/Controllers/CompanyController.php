@@ -67,7 +67,7 @@ class CompanyController extends Controller
              return response()->json(null, 401);
          }
  
-        $company = Company::with('items')->findOrFail($id);
+        $company = Company::with('items')->with('users')->findOrFail($id);
 
         return response()->json($company);
     }
@@ -75,16 +75,17 @@ class CompanyController extends Controller
     public function update(CompanyRequest $request, $id)
     {
         //Clients can only update their company
-        if(auth()->user()->isClient() && $id != auth()->user()->company_id)
+        if(auth()->user()->isClient())
         {
-            return response()->json(null, 401);
+            if(auth()->user()->company_id != $id && auth()->user()->company_rank != 3)
+            {
+                return response()->json(null, 401);
+            }
         }
-
         $request->validate([
             'name' => 'required|string',
             'email' => "unique:companies,email,$id,id",
             'phone' => 'required',
-            'max_users' => 'required',
             'address' => 'required',
             'number' => 'required',
         ]);
@@ -93,7 +94,6 @@ class CompanyController extends Controller
         $company->name = $request->name;
         $company->email = $request->email;
         $company->phone = $request->phone;
-        $company->max_users = $request->max_users;
         $company->address = $request->address;
         $company->number = $request->number;
 
@@ -108,6 +108,7 @@ class CompanyController extends Controller
         }
 
         $company->save();
+        $company->load('items');
         return response()->json($company, 200);
     }
 
@@ -118,8 +119,13 @@ class CompanyController extends Controller
         {
             return response()->json(null, 401);
         }
-        Company::destroy($id);
-
+        $company = Company::find($id);
+        $company->tickets()->delete($id);
+        $company->invoices()->delete($id);
+        $company->users()->delete($id);
+        $company->items()->delete($id);
+        $company->delete($id);
+        
         return response()->json(null, 204);
     }
 }

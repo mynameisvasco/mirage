@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'auth'], function () 
 {
     Route::post('login', 'AuthController@login');
-    Route::post('signup', 'AuthController@signup');
+    Route::post('signup', 'AuthController@signup')->middleware('auth:api');
   
     Route::group(['middleware' => 'auth:api'], function() 
     {
@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth:api'], function()
 {
     Route::get('/users/rank/{rank}', 'AuthController@users');
     Route::get('/users/{id}', 'AuthController@user1');
+    Route::post('/users/changepassword', 'AuthController@changePassword');
     Route::put('/users/{id}', 'AuthController@editUser');
     Route::delete('/users/{id}', 'AuthController@deleteUser');
 

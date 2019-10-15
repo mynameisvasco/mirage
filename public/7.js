@@ -189,6 +189,126 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -201,86 +321,151 @@ __webpack_require__.r(__webpack_exports__);
       },
       newCompany: {},
       itemsToAdd: [],
-      items: []
+      items: [],
+      newPopupActiveClients: false,
+      editPopupActiveClients: false,
+      clients: {},
+      editClient: {
+        company: []
+      },
+      newClient: {}
     };
   },
   methods: {
-    getItems: function getItems() {
+    convertRankName: function convertRankName(rank) {
+      if (rank == 1) {
+        return ['Support', 'success'];
+      } else if (rank == 2) {
+        return ['Financial', 'primary'];
+      } else if (rank == 3) {
+        return ['Administrator', 'warning'];
+      } else return [null, null];
+    },
+    getClient: function getClient(id) {
       var _this = this;
 
-      this.$http.get('/api/companyinformations', {
+      this.editPopupActiveClients = true;
+      this.$http.get('/api/users/' + id, {
         headers: {
           'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        for (var i = 0; i < JSON.parse(response.data.items).length; i++) {
-          _this.items.push({
-            label: JSON.parse(response.data.items)[i].name,
-            value: JSON.parse(response.data.items)[i].name
-          });
-        }
+        _this.editClient = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    getCompanies: function getCompanies() {
+    onFileChangeNewClients: function onFileChangeNewClients(event) {
+      this.newClient.picture = event.target.files[0];
+    },
+    onFileChangeEditClients: function onFileChangeEditClients(event) {
+      this.editClient.picture = event.target.files[0];
+    },
+    createClient: function createClient() {
       var _this2 = this;
 
-      this.$http.get('/api/companies', {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.token
-        }
-      }).then(function (response) {
-        _this2.companies = response.data;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getCompany: function getCompany(id) {
-      var _this3 = this;
-
-      this.editPopupActive = true;
-      this.$http.get('/api/companies/' + id, {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.token
-        }
-      }).then(function (response) {
-        _this3.editCompany = response.data;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    onFileChangeNew: function onFileChangeNew(event) {
-      this.newCompany.picture = event.target.files[0];
-    },
-    onFileChangeEdit: function onFileChangeEdit(event) {
-      this.editCompany.picture = event.target.files[0];
-    },
-    createCompany: function createCompany() {
-      var _this4 = this;
-
       var formData = new FormData();
-      formData.append('picture', this.newCompany.picture);
-      formData.append('name', this.newCompany.name);
-      formData.append('email', this.newCompany.email);
-      formData.append('number', this.newCompany.number);
-      formData.append('address', this.newCompany.address);
-      formData.append('phone', this.newCompany.phone);
-      formData.append('max_users', this.newCompany.max_users);
-      this.$http.post('/api/companies', formData, {
+      formData.append('picture', this.newClient.picture);
+      formData.append('name', this.newClient.name);
+      formData.append('email', this.newClient.email);
+      formData.append('password', this.newClient.password);
+      formData.append('password_confirmation', this.newClient.password_confirmation);
+      formData.append('company_id', this.editCompany.id);
+      formData.append('rank', 0);
+      this.$http.post('/api/auth/signup', formData, {
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer ' + localStorage.token,
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (response) {
-        _this4.companies.unshift(response.data);
+        _this2.clients.push(response.data);
 
-        _this4.newPopupActive = false;
+        _this2.newPopupActiveClients = false;
+
+        _this2.$vs.notify({
+          title: 'Success!',
+          text: 'Client was added with success',
+          color: 'success',
+          position: 'top-right'
+        });
+      })["catch"](function (error) {
+        //Show error notification
+        Object.keys(error['response'].data.errors).forEach(function (key) {
+          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
+
+          _this2.$vs.notify({
+            title: 'Error!',
+            text: message,
+            color: 'danger',
+            position: 'top-right'
+          });
+        });
+      });
+    },
+    updateClient: function updateClient() {
+      var _this3 = this;
+
+      var formData = new FormData();
+      formData.append('picture', this.editClient.picture);
+      formData.append('name', this.editClient.name);
+      formData.append('email', this.editClient.email);
+      formData.append('_method', "PUT");
+      this.$http.post('/api/users/' + this.editClient.id, formData, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.token,
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        for (var i = 0; i < _this3.clients.length; i++) {
+          if (_this3.clients[i].id == response.data.id) {
+            _this3.$set(_this3.clients, i, response.data);
+          }
+        }
+
+        _this3.editPopupActiveClients = false;
+
+        _this3.$vs.notify({
+          title: 'Success!',
+          text: 'Client was edited with success',
+          color: 'success',
+          position: 'top-right'
+        });
+      })["catch"](function (error) {
+        //Show error notification
+        Object.keys(error['response'].data.errors).forEach(function (key) {
+          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
+
+          _this3.$vs.notify({
+            title: 'Error!',
+            text: message,
+            color: 'danger',
+            position: 'top-right'
+          });
+        });
+      });
+    },
+    deleteClient: function deleteClient(id) {
+      var _this4 = this;
+
+      this.$http["delete"]('/api/users/' + id, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.token
+        }
+      }).then(function (response) {
+        for (var i = 0; i < _this4.clients.length; i++) {
+          if (_this4.clients[i].id == id) {
+            _this4.$delete(_this4.clients, i);
+          }
+        }
+
+        _this4.editPopupActiveClients = false;
 
         _this4.$vs.notify({
           title: 'Success!',
-          text: 'Company was added with success',
+          text: 'Client was deleted with success',
           color: 'success',
           position: 'top-right'
         });
@@ -298,8 +483,102 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    updateCompany: function updateCompany() {
+    getItems: function getItems() {
       var _this5 = this;
+
+      this.$http.get('/api/companyinformations', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.token
+        }
+      }).then(function (response) {
+        for (var i = 0; i < JSON.parse(response.data.items).length; i++) {
+          _this5.items.push({
+            label: JSON.parse(response.data.items)[i].name,
+            value: JSON.parse(response.data.items)[i].name
+          });
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getCompanies: function getCompanies() {
+      var _this6 = this;
+
+      this.$http.get('/api/companies', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.token
+        }
+      }).then(function (response) {
+        _this6.companies = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getCompany: function getCompany(id) {
+      var _this7 = this;
+
+      this.editPopupActive = true;
+      this.$http.get('/api/companies/' + id, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.token
+        }
+      }).then(function (response) {
+        _this7.editCompany = response.data;
+        _this7.clients = response.data.users;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    onFileChangeNew: function onFileChangeNew(event) {
+      this.newCompany.picture = event.target.files[0];
+    },
+    onFileChangeEdit: function onFileChangeEdit(event) {
+      this.editCompany.picture = event.target.files[0];
+    },
+    createCompany: function createCompany() {
+      var _this8 = this;
+
+      var formData = new FormData();
+      formData.append('picture', this.newCompany.picture);
+      formData.append('name', this.newCompany.name);
+      formData.append('email', this.newCompany.email);
+      formData.append('number', this.newCompany.number);
+      formData.append('address', this.newCompany.address);
+      formData.append('phone', this.newCompany.phone);
+      formData.append('max_users', this.newCompany.max_users);
+      this.$http.post('/api/companies', formData, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.token,
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        _this8.companies.unshift(response.data);
+
+        _this8.newPopupActive = false;
+
+        _this8.$vs.notify({
+          title: 'Success!',
+          text: 'Company was added with success',
+          color: 'success',
+          position: 'top-right'
+        });
+      })["catch"](function (error) {
+        //Show error notification
+        Object.keys(error['response'].data.errors).forEach(function (key) {
+          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
+
+          _this8.$vs.notify({
+            title: 'Error!',
+            text: message,
+            color: 'danger',
+            position: 'top-right'
+          });
+        });
+      });
+    },
+    updateCompany: function updateCompany() {
+      var _this9 = this;
 
       var formData = new FormData();
       formData.append('picture', this.editCompany.picture);
@@ -317,15 +596,15 @@ __webpack_require__.r(__webpack_exports__);
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (response) {
-        for (var i = 0; i < _this5.companies.length; i++) {
-          if (_this5.companies[i].id == response.data.id) {
-            _this5.$set(_this5.companies, i, response.data);
+        for (var i = 0; i < _this9.companies.length; i++) {
+          if (_this9.companies[i].id == response.data.id) {
+            _this9.$set(_this9.companies, i, response.data);
           }
         }
 
-        _this5.editPopupActive = false;
+        _this9.editPopupActive = false;
 
-        _this5.$vs.notify({
+        _this9.$vs.notify({
           title: 'Success!',
           text: 'Company was edited with success',
           color: 'success',
@@ -336,7 +615,7 @@ __webpack_require__.r(__webpack_exports__);
         Object.keys(error['response'].data.errors).forEach(function (key) {
           var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
 
-          _this5.$vs.notify({
+          _this9.$vs.notify({
             title: 'Error!',
             text: message,
             color: 'danger',
@@ -346,7 +625,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     deleteCompany: function deleteCompany(id) {
-      var _this6 = this;
+      var _this10 = this;
 
       this.$http["delete"]('/api/companies/' + id, {
         headers: {
@@ -354,15 +633,15 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        for (var i = 0; i < _this6.companies.length; i++) {
-          if (_this6.companies[i].id == id) {
-            _this6.$delete(_this6.companies, i);
+        for (var i = 0; i < _this10.companies.length; i++) {
+          if (_this10.companies[i].id == id) {
+            _this10.$delete(_this10.companies, i);
           }
         }
 
-        _this6.editPopupActive = false;
+        _this10.editPopupActive = false;
 
-        _this6.$vs.notify({
+        _this10.$vs.notify({
           title: 'Success!',
           text: 'Company was deleted with success',
           color: 'success',
@@ -373,7 +652,7 @@ __webpack_require__.r(__webpack_exports__);
         Object.keys(error['response'].data.errors).forEach(function (key) {
           var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
 
-          _this6.$vs.notify({
+          _this10.$vs.notify({
             title: 'Error!',
             text: message,
             color: 'danger',
@@ -383,7 +662,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createItem: function createItem() {
-      var _this7 = this;
+      var _this11 = this;
 
       var formData = new FormData();
       formData.append('name', this.itemsToAdd.name.label);
@@ -396,9 +675,9 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        _this7.editCompany.items.push(response.data);
+        _this11.editCompany.items.push(response.data);
 
-        _this7.$vs.notify({
+        _this11.$vs.notify({
           title: 'Success!',
           text: 'Item was added with success',
           color: 'success',
@@ -409,7 +688,7 @@ __webpack_require__.r(__webpack_exports__);
         Object.keys(error['response'].data.errors).forEach(function (key) {
           var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
 
-          _this7.$vs.notify({
+          _this11.$vs.notify({
             title: 'Error!',
             text: message,
             color: 'danger',
@@ -419,7 +698,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     deleteItem: function deleteItem(id) {
-      var _this8 = this;
+      var _this12 = this;
 
       this.$http["delete"]('/api/items/' + id, {
         headers: {
@@ -427,13 +706,13 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        for (var k = 0; k < _this8.editCompany.items.length; k++) {
-          if (_this8.editCompany.items[k].id == id) {
-            _this8.$delete(_this8.editCompany.items, k);
+        for (var k = 0; k < _this12.editCompany.items.length; k++) {
+          if (_this12.editCompany.items[k].id == id) {
+            _this12.$delete(_this12.editCompany.items, k);
           }
         }
 
-        _this8.$vs.notify({
+        _this12.$vs.notify({
           title: 'Success!',
           text: 'Item was deleted with success',
           color: 'success',
@@ -444,7 +723,7 @@ __webpack_require__.r(__webpack_exports__);
         Object.keys(error['response'].data.errors).forEach(function (key) {
           var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
 
-          _this8.$vs.notify({
+          _this12.$vs.notify({
             title: 'Error!',
             text: message,
             color: 'danger',
@@ -489,6 +768,376 @@ var render = function() {
     "div",
     { staticClass: "flex mb-4" },
     [
+      _c(
+        "vs-popup",
+        {
+          staticClass: "holamundo",
+          attrs: {
+            title: "Add a new client",
+            active: _vm.newPopupActiveClients
+          },
+          on: {
+            "update:active": function($event) {
+              _vm.newPopupActiveClients = $event
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    "icon-pack": "feather",
+                    icon: "icon-user",
+                    "icon-no-border": "",
+                    label: "Name"
+                  },
+                  model: {
+                    value: _vm.newClient.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "name", $$v)
+                    },
+                    expression: "newClient.name"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "text ",
+                    "icon-pack": "feather",
+                    icon: "icon-mail",
+                    "icon-no-border": "",
+                    label: "Email"
+                  },
+                  model: {
+                    value: _vm.newClient.email,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "email", $$v)
+                    },
+                    expression: "newClient.email"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "text",
+                    disabled: "",
+                    "icon-pack": "feather",
+                    icon: "icon-truck",
+                    "icon-no-border": "",
+                    label: "Company"
+                  },
+                  model: {
+                    value: _vm.editCompany.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.editCompany, "name", $$v)
+                    },
+                    expression: "editCompany.name"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "password",
+                    autocomplete: "new-password",
+                    "icon-pack": "feather",
+                    icon: "icon-lock",
+                    "icon-no-border": "",
+                    label: "Password"
+                  },
+                  model: {
+                    value: _vm.newClient.password,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "password", $$v)
+                    },
+                    expression: "newClient.password"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "password",
+                    "icon-pack": "feather",
+                    icon: "icon-lock",
+                    "icon-no-border": "",
+                    label: "Password Confirmation"
+                  },
+                  model: {
+                    value: _vm.newClient.password_confirmation,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "password_confirmation", $$v)
+                    },
+                    expression: "newClient.password_confirmation"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "file",
+                    "icon-pack": "feather",
+                    icon: "icon-file",
+                    "icon-no-border": "",
+                    label: "Picture file"
+                  },
+                  on: { change: _vm.onFileChangeNewClients }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "vx-col w-full align-items-right justify-content-flex-end"
+              },
+              [
+                _c(
+                  "vs-button",
+                  {
+                    staticClass: "mr-3 mb-2",
+                    attrs: { "icon-pack": "feather", icon: "icon-plus" },
+                    on: {
+                      click: function($event) {
+                        return _vm.createClient()
+                      }
+                    }
+                  },
+                  [_vm._v("Create")]
+                )
+              ],
+              1
+            )
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "vs-popup",
+        {
+          staticClass: "holamundo",
+          attrs: { title: "Edit client", active: _vm.editPopupActiveClients },
+          on: {
+            "update:active": function($event) {
+              _vm.editPopupActiveClients = $event
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    "icon-pack": "feather",
+                    icon: "icon-user",
+                    "icon-no-border": "",
+                    label: "Name"
+                  },
+                  model: {
+                    value: _vm.editClient.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.editClient, "name", $$v)
+                    },
+                    expression: "editClient.name"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "text ",
+                    "icon-pack": "feather",
+                    icon: "icon-mail",
+                    "icon-no-border": "",
+                    label: "Email"
+                  },
+                  model: {
+                    value: _vm.editClient.email,
+                    callback: function($$v) {
+                      _vm.$set(_vm.editClient, "email", $$v)
+                    },
+                    expression: "editClient.email"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "text",
+                    disabled: "",
+                    "icon-pack": "feather",
+                    icon: "icon-truck",
+                    "icon-no-border": "",
+                    label: "Company"
+                  },
+                  model: {
+                    value: _vm.editClient.company.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.editClient.company, "name", $$v)
+                    },
+                    expression: "editClient.company.name"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-8" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "file",
+                    "icon-pack": "feather",
+                    icon: "icon-file",
+                    "icon-no-border": "",
+                    label: "Picture file"
+                  },
+                  on: { change: _vm.onFileChangeEdit }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "vx-col mr-0 pr-0 align-items-right justify-content-flex-end"
+              },
+              [
+                _c(
+                  "vs-button",
+                  {
+                    staticClass: "mr-3 mb-2",
+                    attrs: { "icon-pack": "feather", icon: "icon-save" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updateClient()
+                      }
+                    }
+                  },
+                  [_vm._v("Save")]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "vx-col ml-0 pl-0 align-items-right justify-content-flex-end"
+              },
+              [
+                _c(
+                  "vs-button",
+                  {
+                    staticClass: "mr-3 mb-2",
+                    attrs: {
+                      color: "danger",
+                      "icon-pack": "feather",
+                      icon: "icon-trash"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteClient(_vm.editClient.id)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ],
+              1
+            )
+          ])
+        ]
+      ),
+      _vm._v(" "),
       _c(
         "vs-popup",
         {
@@ -676,7 +1325,7 @@ var render = function() {
                     "icon-no-border": "",
                     label: "Picture file"
                   },
-                  on: { change: _vm.onFileChangeNew }
+                  on: { change: _vm.onFileChangeNewClients }
                 })
               ],
               1
@@ -714,7 +1363,7 @@ var render = function() {
       _c(
         "vs-popup",
         {
-          staticClass: "holamundo",
+          staticClass: "holamundo popup-md",
           attrs: { title: "Edit company", active: _vm.editPopupActive },
           on: {
             "update:active": function($event) {
@@ -1163,6 +1812,275 @@ var render = function() {
                         )
                       ])
                     ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "vs-tab",
+                    {
+                      attrs: {
+                        label: "Users",
+                        "icon-pack": "feather",
+                        icon: "icon-users"
+                      }
+                    },
+                    [
+                      _c(
+                        "vs-button",
+                        {
+                          staticClass: "mb-6 mt-6",
+                          attrs: { "icon-pack": "feather", icon: "icon-plus" },
+                          on: {
+                            click: function($event) {
+                              _vm.newPopupActiveClients = true
+                            }
+                          }
+                        },
+                        [_vm._v("New Client")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "vs-table",
+                        {
+                          attrs: {
+                            search: "",
+                            "max-items": "10",
+                            pagination: "",
+                            data: _vm.clients
+                          },
+                          scopedSlots: _vm._u([
+                            {
+                              key: "default",
+                              fn: function(ref) {
+                                var data = ref.data
+                                return _vm._l(data, function(tr, indextr) {
+                                  return _c(
+                                    "vs-tr",
+                                    { key: indextr },
+                                    [
+                                      _c(
+                                        "vs-td",
+                                        { attrs: { data: data[indextr].name } },
+                                        [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "grid-layout-container alignment-block"
+                                            },
+                                            [
+                                              _c(
+                                                "vs-row",
+                                                {
+                                                  attrs: {
+                                                    "vs-align": "center",
+                                                    "vs-type": "flex",
+                                                    "vs-w": "12"
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "vs-col",
+                                                    {
+                                                      staticClass: "mb-4",
+                                                      attrs: {
+                                                        "vs-type": "flex",
+                                                        "vs-align": "center",
+                                                        "vs-lg": "3",
+                                                        "vs-md": "6",
+                                                        "vs-sm": "6",
+                                                        "vs-xs": "12"
+                                                      }
+                                                    },
+                                                    [
+                                                      data[indextr].picture
+                                                        ? _c("vs-avatar", {
+                                                            attrs: {
+                                                              src:
+                                                                "/storage/avatars/" +
+                                                                data[indextr]
+                                                                  .picture
+                                                            }
+                                                          })
+                                                        : _vm._e(),
+                                                      _vm._v(" "),
+                                                      !data[indextr].picture
+                                                        ? _c("vs-avatar", {
+                                                            attrs: {
+                                                              color: "primary",
+                                                              text:
+                                                                data[indextr]
+                                                                  .name
+                                                            }
+                                                          })
+                                                        : _vm._e()
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "vs-col",
+                                                    {
+                                                      attrs: {
+                                                        "vs-type": "flex",
+                                                        "vs-align": "center",
+                                                        "vs-lg": "6",
+                                                        "vs-md": "6",
+                                                        "vs-sm": "6",
+                                                        "vs-xs": "12"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "span",
+                                                        {
+                                                          staticStyle: {
+                                                            "margin-top":
+                                                              "-10px"
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              data[indextr].name
+                                                            )
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "vs-td",
+                                        {
+                                          attrs: {
+                                            data: data[indextr].company_rank
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "vs-chip",
+                                            {
+                                              attrs: {
+                                                color: _vm.convertRankName(
+                                                  data[indextr].company_rank
+                                                )[1]
+                                              }
+                                            },
+                                            [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.convertRankName(
+                                                    data[indextr].company_rank
+                                                  )[0]
+                                                )
+                                              )
+                                            ]
+                                          )
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "vs-td",
+                                        {
+                                          attrs: {
+                                            data: data[indextr].created_at
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n\t\t\t\t\t\t\t\t\t\t" +
+                                              _vm._s(
+                                                data[indextr].created_at.split(
+                                                  " "
+                                                )[0]
+                                              ) +
+                                              "\n\t\t\t\t\t\t\t\t\t"
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "vs-td",
+                                        { attrs: { data: data[indextr].id } },
+                                        [
+                                          _c(
+                                            "vs-button",
+                                            {
+                                              attrs: {
+                                                "icon-pack": "feather",
+                                                icon: "icon-edit",
+                                                color: "primary"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.getClient(
+                                                    data[indextr].id
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Edit")]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                })
+                              }
+                            }
+                          ])
+                        },
+                        [
+                          _c("template", { slot: "header" }, [
+                            _c("h3", { staticClass: "mb-5" }, [
+                              _vm._v(
+                                "\n\t\t\t\t\t\t\t\t\tClients\n\t\t\t\t\t\t\t\t"
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "template",
+                            { slot: "thead" },
+                            [
+                              _c("vs-th", [
+                                _vm._v(
+                                  "\n\t\t\t\t\t\t\t\t\tName\n\t\t\t\t\t\t\t\t"
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("vs-th", [
+                                _vm._v(
+                                  "\n\t\t\t\t\t\t\t\t\tRole\n\t\t\t\t\t\t\t\t"
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("vs-th", { attrs: { "sort-key": "status" } }, [
+                                _vm._v(
+                                  "\n\t\t\t\t\t\t\t\t\tSince\n\t\t\t\t\t\t\t\t"
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("vs-th")
+                            ],
+                            1
+                          )
+                        ],
+                        2
+                      )
+                    ],
+                    1
                   )
                 ],
                 1
@@ -1301,9 +2219,9 @@ var render = function() {
                             { attrs: { data: data[indextr].email } },
                             [
                               _vm._v(
-                                "\n\t\t\t\t\t\t" +
+                                "\n\t\t\t\t\t\t\t" +
                                   _vm._s(data[indextr].email) +
-                                  "\n\t\t\t\t\t"
+                                  "\n\t\t\t\t\t\t"
                               )
                             ]
                           ),
@@ -1313,11 +2231,11 @@ var render = function() {
                             { attrs: { data: data[indextr].created_at } },
                             [
                               _vm._v(
-                                "\n\t\t\t\t\t\t" +
+                                "\n\t\t\t\t\t\t\t" +
                                   _vm._s(
                                     data[indextr].created_at.split(" ")[0]
                                   ) +
-                                  "\n\t\t\t\t\t"
+                                  "\n\t\t\t\t\t\t"
                               )
                             ]
                           ),

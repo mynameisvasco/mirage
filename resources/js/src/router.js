@@ -44,6 +44,7 @@ const router = new Router({
             name: 'profile',
             component: () => import('@/views/Profile.vue'),
           },
+          
           // =============================================================================
           // Client Routes
           // =============================================================================
@@ -56,6 +57,16 @@ const router = new Router({
             path: '/client/invoices',
             name: 'invoices-client',
             component: () => import('@/views/client/Invoices.vue'),
+          },
+          {
+            path: '/client/admin/company',
+            name: 'company-client',
+            component: () => import('@/views/client/Company.vue'),
+          },
+          {
+            path: '/client/admin/employees',
+            name: 'employees-client',
+            component: () => import('@/views/client/Employees.vue'),
           },
           // =============================================================================
           // Support Routes
@@ -82,11 +93,6 @@ const router = new Router({
             path: '/admin/companies',
             name: 'companies-admin',
             component: () => import('@/views/admin/Companies.vue'),
-          },
-          {
-            path: '/admin/clients',
-            name: 'clients-admin',
-            component: () => import('@/views/admin/Clients.vue'),
           },
           {
             path: '/admin/staff',
@@ -121,6 +127,11 @@ const router = new Router({
             component: () => import('@/views/pages/Login.vue')
           },
           {
+            path: '',
+            name: 'login',
+            component: () => import('@/views/pages/Login.vue')
+          },
+          {
             path: '/error-404',
             name: 'pageError404',
             component: () => import('@/views/pages/Error404.vue')
@@ -150,11 +161,15 @@ router.beforeEach(async (to, from, next) =>{
       if(store.state.AppActiveUser.rank == 3) {
         next('/admin/home')
       } else if (store.state.AppActiveUser.rank == 2) {
-        next('/financial/home')
+        next('/admin/invoices')
       } else if (store.state.AppActiveUser.rank == 1) {
         next('/support/home')
       } else if (store.state.AppActiveUser.rank == 0) {
-        next('/client/tickets')
+        if(store.state.AppActiveUser.company_rank == 0) {
+          next('/client/tickets')
+        } else {
+          next('/client/invoices');
+        }
       }
     }
     else {

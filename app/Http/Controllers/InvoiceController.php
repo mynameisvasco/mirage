@@ -13,13 +13,13 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        if(auth()->user()->isAdmin())
+        if(auth()->user()->isAdmin() || auth()->user()->isFinancial())
         {
             $invoices = Invoice::with('company')->with('ticket')->latest()->get();
         }
         else
         {
-            $invoices = Invoice::with('company')->with('ticket')->latest()->where('user_id', auth()->user()->id)->get();
+            $invoices = Invoice::with('company')->with('ticket')->latest()->where('company_id', auth()->user()->company_id)->get();
         }
 
         return response()->json($invoices);
@@ -88,7 +88,7 @@ class InvoiceController extends Controller
             'name'      => $invoice->company->name,
             'id'        => $invoice->company->vat,
             'phone'     => $invoice->company->email,
-            'location'  => 'C / Unknown Street 1st',
+            'location'  => $invoice->company->address,
         ])
         ->business([
             'name'        => $company->name,
