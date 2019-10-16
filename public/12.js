@@ -1,9 +1,9 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[12],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Company.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/views/client/Company.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Employees.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/views/client/Employees.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -90,99 +90,122 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      company: {
-        items: [{}]
+      newPopupActive: false,
+      editPopupActive: false,
+      clients: [],
+      editClient: {
+        company: []
       },
-      itemToEdit: {},
-      editPopupActive: false
+      newClient: {
+        company_rank: {}
+      }
     };
   },
   methods: {
-    getCompanyInfo: function getCompanyInfo() {
+    getClients: function getClients() {
       var _this = this;
 
-      this.$http.get('/api/companies/' + this.$store.state.AppActiveUser.company_id, {
+      this.$http.get('/api/users/rank/0', {
         headers: {
           'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        _this.company = response.data;
-        _this.company.items = response.data.items;
+        _this.clients = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    updateCompanyInfo: function updateCompanyInfo() {
+    getClient: function getClient(id) {
       var _this2 = this;
 
-      var formData = new FormData();
-      formData.append('name', this.company.name);
-      formData.append('address', this.company.address);
-      formData.append('email', this.company.email);
-      formData.append('phone', this.company.phone);
-      formData.append('number', this.company.number);
-      formData.append('picture', this.company.picture);
-      formData.append('_method', 'PUT');
-      this.$http.post('/api/companies/' + this.company.id, formData, {
+      this.editPopupActive = true;
+      this.$http.get('/api/users/' + id, {
         headers: {
-          'Authorization': 'Bearer ' + localStorage.token,
-          'Content-Type': 'multipart/form-data'
+          'Authorization': 'Bearer ' + localStorage.token
         }
       }).then(function (response) {
-        _this2.company = response.data;
-
-        _this2.$vs.notify({
-          title: 'Success!',
-          text: 'Company was updated with success',
-          color: 'success',
-          position: 'top-right'
-        });
+        _this2.editClient = response.data;
       })["catch"](function (error) {
-        //Show error notification
-        Object.keys(error['response'].data.errors).forEach(function (key) {
-          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
-
-          _this2.$vs.notify({
-            title: 'Error!',
-            text: message,
-            color: 'danger',
-            position: 'top-right'
-          });
-        });
+        console.log(error);
       });
     },
-    onFileChange: function onFileChange(event) {
-      this.company.picture = event.target.files[0];
+    onFileChangeNew: function onFileChangeNew(event) {
+      this.newClient.picture = event.target.files[0];
     },
-    openEditPopUp: function openEditPopUp(item) {
-      this.editPopupActive = true;
-      this.itemToEdit = item;
+    onFileChangeEdit: function onFileChangeEdit(event) {
+      this.editClient.picture = event.target.files[0];
     },
-    editItem: function editItem() {
+    createClient: function createClient() {
       var _this3 = this;
 
+      console.log(this.newClient.company_rank.value);
       var formData = new FormData();
-      formData.append('description', this.itemToEdit.description);
-      formData.append('_method', 'PUT');
-      this.$http.post('/api/items/' + this.itemToEdit.id, formData, {
+      formData.append('picture', this.newClient.picture);
+      formData.append('name', this.newClient.name);
+      formData.append('email', this.newClient.email);
+      formData.append('password', this.newClient.password);
+      formData.append('password_confirmation', this.newClient.password_confirmation);
+      formData.append('company_rank', this.newClient.company_rank.value);
+      formData.append('rank', 0);
+      this.$http.post('/api/auth/signup', formData, {
         headers: {
+          'Accept': 'application/json',
           'Authorization': 'Bearer ' + localStorage.token,
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (response) {
-        for (var i = 0; i < _this3.company.items.length; i++) {
-          if (_this3.company.items[i].id == response.data.id) {
-            _this3.$set(_this3.company.items, i, response.data);
-          }
-        }
+        _this3.clients.push(response.data);
+
+        _this3.newPopupActive = false;
 
         _this3.$vs.notify({
           title: 'Success!',
-          text: 'Company was updated with success',
+          text: 'Client was added with success',
           color: 'success',
           position: 'top-right'
         });
@@ -199,10 +222,90 @@ __webpack_require__.r(__webpack_exports__);
           });
         });
       });
+    },
+    updateClient: function updateClient() {
+      var _this4 = this;
+
+      var formData = new FormData();
+      formData.append('picture', this.editClient.picture);
+      formData.append('name', this.editClient.name);
+      formData.append('email', this.editClient.email);
+      formData.append('_method', "PUT");
+      this.$http.post('/api/users/' + this.editClient.id, formData, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.token,
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        for (var i = 0; i < _this4.clients.length; i++) {
+          if (_this4.clients[i].id == response.data.id) {
+            _this4.$set(_this4.clients, i, response.data);
+          }
+        }
+
+        _this4.editPopupActive = false;
+
+        _this4.$vs.notify({
+          title: 'Success!',
+          text: 'Client was edited with success',
+          color: 'success',
+          position: 'top-right'
+        });
+      })["catch"](function (error) {
+        //Show error notification
+        Object.keys(error['response'].data.errors).forEach(function (key) {
+          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
+
+          _this4.$vs.notify({
+            title: 'Error!',
+            text: message,
+            color: 'danger',
+            position: 'top-right'
+          });
+        });
+      });
+    },
+    deleteClient: function deleteClient(id) {
+      var _this5 = this;
+
+      this.$http["delete"]('/api/users/' + id, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.token
+        }
+      }).then(function (response) {
+        for (var i = 0; i < _this5.clients.length; i++) {
+          if (_this5.clients[i].id == id) {
+            _this5.$delete(_this5.clients, i);
+          }
+        }
+
+        _this5.editPopupActive = false;
+
+        _this5.$vs.notify({
+          title: 'Success!',
+          text: 'Client was deleted with success',
+          color: 'success',
+          position: 'top-right'
+        });
+      })["catch"](function (error) {
+        //Show error notification
+        Object.keys(error['response'].data.errors).forEach(function (key) {
+          var message = String(error['response'].data.errors[key]).replace('["', '').replace('"]', ''); //Show error notification
+
+          _this5.$vs.notify({
+            title: 'Error!',
+            text: message,
+            color: 'danger',
+            position: 'top-right'
+          });
+        });
+      });
     }
   },
   mounted: function mounted() {
-    this.getCompanyInfo();
+    this.getClients();
   },
   //Only admin clients can access this route
   beforeRouteEnter: function beforeRouteEnter(to, from, next) {
@@ -216,10 +319,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Company.vue?vue&type=template&id=32ce4723&":
-/*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/views/client/Company.vue?vue&type=template&id=32ce4723& ***!
-  \****************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Employees.vue?vue&type=template&id=4182caab&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/views/client/Employees.vue?vue&type=template&id=4182caab& ***!
+  \******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -233,16 +336,215 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "flex mb-4" },
     [
       _c(
         "vs-popup",
         {
           staticClass: "holamundo",
-          attrs: {
-            "background-color": "rgba(0,0,0,.6)",
-            title: "Edit Item",
-            active: _vm.editPopupActive
-          },
+          attrs: { title: "Add a new employee", active: _vm.newPopupActive },
+          on: {
+            "update:active": function($event) {
+              _vm.newPopupActive = $event
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    "icon-pack": "feather",
+                    icon: "icon-user",
+                    "icon-no-border": "",
+                    label: "Name"
+                  },
+                  model: {
+                    value: _vm.newClient.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "name", $$v)
+                    },
+                    expression: "newClient.name"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "text ",
+                    "icon-pack": "feather",
+                    icon: "icon-mail",
+                    "icon-no-border": "",
+                    label: "Email"
+                  },
+                  model: {
+                    value: _vm.newClient.email,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "email", $$v)
+                    },
+                    expression: "newClient.email"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "password",
+                    autocomplete: "new-password",
+                    "icon-pack": "feather",
+                    icon: "icon-lock",
+                    "icon-no-border": "",
+                    label: "Password"
+                  },
+                  model: {
+                    value: _vm.newClient.password,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "password", $$v)
+                    },
+                    expression: "newClient.password"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "password",
+                    "icon-pack": "feather",
+                    icon: "icon-lock",
+                    "icon-no-border": "",
+                    label: "Password Confirmation"
+                  },
+                  model: {
+                    value: _vm.newClient.password_confirmation,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "password_confirmation", $$v)
+                    },
+                    expression: "newClient.password_confirmation"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c(
+                  "label",
+                  { staticClass: "ml-2", staticStyle: { "font-size": "12px" } },
+                  [_vm._v("Role")]
+                ),
+                _vm._v(" "),
+                _c("v-select", {
+                  attrs: {
+                    placeholder: "Select a role",
+                    options: [
+                      { label: "Administrator", value: 3 },
+                      { label: "Financial", value: 2 },
+                      { label: "Support", value: 1 }
+                    ]
+                  },
+                  model: {
+                    value: _vm.newClient.company_rank,
+                    callback: function($$v) {
+                      _vm.$set(_vm.newClient, "company_rank", $$v)
+                    },
+                    expression: "newClient.company_rank"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "file",
+                    "icon-pack": "feather",
+                    icon: "icon-file",
+                    "icon-no-border": "",
+                    label: "Picture file"
+                  },
+                  on: { change: _vm.onFileChangeNew }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "vx-col w-full align-items-right justify-content-flex-end"
+              },
+              [
+                _c(
+                  "vs-button",
+                  {
+                    staticClass: "mr-3 mb-2",
+                    attrs: { "icon-pack": "feather", icon: "icon-plus" },
+                    on: {
+                      click: function($event) {
+                        return _vm.createClient()
+                      }
+                    }
+                  },
+                  [_vm._v("Create")]
+                )
+              ],
+              1
+            )
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "vs-popup",
+        {
+          staticClass: "holamundo",
+          attrs: { title: "Edit employee", active: _vm.editPopupActive },
           on: {
             "update:active": function($event) {
               _vm.editPopupActive = $event
@@ -250,337 +552,304 @@ var render = function() {
           }
         },
         [
-          _c(
-            "vs-row",
-            [
-              _c(
-                "vs-col",
-                {
-                  staticClass: "mb-4",
-                  attrs: { "vs-align": "center", "vs-sm": "12" }
-                },
-                [
-                  _c("vs-input", {
-                    staticClass: "w-full",
-                    attrs: {
-                      type: "text",
-                      "icon-pack": "feather",
-                      icon: "icon-edit",
-                      "icon-no-border": "",
-                      label: "Description"
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    "icon-pack": "feather",
+                    icon: "icon-user",
+                    "icon-no-border": "",
+                    label: "Name"
+                  },
+                  model: {
+                    value: _vm.editClient.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.editClient, "name", $$v)
                     },
-                    model: {
-                      value: _vm.itemToEdit.description,
-                      callback: function($$v) {
-                        _vm.$set(_vm.itemToEdit, "description", $$v)
-                      },
-                      expression: "itemToEdit.description"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "vs-col",
-                { attrs: { "vs-w": "12" } },
-                [
-                  _c(
-                    "vs-button",
-                    {
-                      attrs: {
-                        color: "primary",
-                        "icon-pack": "feather",
-                        icon: "icon-save",
-                        type: "filled"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.editItem()
-                        }
+                    expression: "editClient.name"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "text ",
+                    "icon-pack": "feather",
+                    icon: "icon-mail",
+                    "icon-no-border": "",
+                    label: "Email"
+                  },
+                  model: {
+                    value: _vm.editClient.email,
+                    callback: function($$v) {
+                      _vm.$set(_vm.editClient, "email", $$v)
+                    },
+                    expression: "editClient.email"
+                  }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-8" }, [
+            _c(
+              "div",
+              { staticClass: "vx-col w-full" },
+              [
+                _c("vs-input", {
+                  staticClass: "w-full",
+                  attrs: {
+                    type: "file",
+                    "icon-pack": "feather",
+                    icon: "icon-file",
+                    "icon-no-border": "",
+                    label: "Picture file"
+                  },
+                  on: { change: _vm.onFileChangeEdit }
+                })
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "vx-row mb-6" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "vx-col mr-0 pr-0 align-items-right justify-content-flex-end"
+              },
+              [
+                _c(
+                  "vs-button",
+                  {
+                    staticClass: "mr-3 mb-2",
+                    attrs: { "icon-pack": "feather", icon: "icon-save" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updateClient()
                       }
+                    }
+                  },
+                  [_vm._v("Save")]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "vx-col ml-0 pl-0 align-items-right justify-content-flex-end"
+              },
+              [
+                _c(
+                  "vs-button",
+                  {
+                    staticClass: "mr-3 mb-2",
+                    attrs: {
+                      color: "danger",
+                      "icon-pack": "feather",
+                      icon: "icon-trash"
                     },
-                    [_vm._v("Save")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteClient(_vm.editClient.id)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ],
+              1
+            )
+          ])
+        ]
       ),
       _vm._v(" "),
-      _vm._m(0),
-      _vm._v(" "),
       _c(
-        "vs-row",
-        { staticClass: "ml-0" },
+        "div",
+        { staticClass: "w-full mt-6" },
         [
           _c(
-            "vs-col",
+            "vs-button",
             {
               staticClass: "mb-4",
-              attrs: {
-                "vs-align": "center",
-                "vs-sm": "12",
-                "vs-w": "12",
-                "vs-md": "6",
-                "vs-lg": "4"
+              attrs: { "icon-pack": "feather", icon: "icon-plus" },
+              on: {
+                click: function($event) {
+                  _vm.newPopupActive = true
+                }
               }
             },
-            [
-              _c(
-                "div",
-                { staticClass: "flex" },
-                [
-                  _c(
-                    "vx-card",
-                    { staticClass: "h-100", attrs: { title: "Informations" } },
-                    [
-                      _c(
-                        "vs-row",
+            [_vm._v("New Employee")]
+          ),
+          _vm._v(" "),
+          _c(
+            "vs-table",
+            {
+              attrs: {
+                search: "",
+                "max-items": "10",
+                pagination: "",
+                data: _vm.clients
+              },
+              scopedSlots: _vm._u([
+                {
+                  key: "default",
+                  fn: function(ref) {
+                    var data = ref.data
+                    return _vm._l(data, function(tr, indextr) {
+                      return _c(
+                        "vs-tr",
+                        { key: indextr },
                         [
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: {
-                                "vs-w": "12",
-                                "vs-lg": "4",
-                                "vs-md": "6",
-                                "vs-sm": "12"
-                              }
-                            },
-                            [
-                              !_vm.company.picture
-                                ? _c("vs-avatar", {
+                          _c("vs-td", { attrs: { data: data[indextr].name } }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "grid-layout-container alignment-block"
+                              },
+                              [
+                                _c(
+                                  "vs-row",
+                                  {
                                     attrs: {
-                                      size: "100px",
-                                      color: "primary",
-                                      text: _vm.company.name
+                                      "vs-align": "center",
+                                      "vs-type": "flex",
+                                      "vs-w": "12"
                                     }
-                                  })
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.company.picture
-                                ? _c("vs-avatar", {
-                                    attrs: {
-                                      size: "100px",
-                                      src:
-                                        "/storage/companies/" +
-                                        _vm.company.picture +
-                                        "?" +
-                                        Math.random()
-                                    }
-                                  })
-                                : _vm._e()
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-5",
-                              attrs: { "vs-w": "12", "vs-lg": "6" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "file",
-                                  "icon-pack": "feather",
-                                  icon: "icon-file",
-                                  "icon-no-border": "",
-                                  label: "Upload Logo"
-                                },
-                                on: { change: _vm.onFileChange }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-truck",
-                                  "icon-no-border": "",
-                                  label: "Name"
-                                },
-                                model: {
-                                  value: _vm.company.name,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.company, "name", $$v)
                                   },
-                                  expression: "company.name"
-                                }
-                              })
-                            ],
-                            1
+                                  [
+                                    _c(
+                                      "vs-col",
+                                      {
+                                        staticClass: "mb-4",
+                                        attrs: {
+                                          "vs-type": "flex",
+                                          "vs-align": "center",
+                                          "vs-lg": "3",
+                                          "vs-md": "6",
+                                          "vs-sm": "6",
+                                          "vs-xs": "12"
+                                        }
+                                      },
+                                      [
+                                        data[indextr].picture
+                                          ? _c("vs-avatar", {
+                                              attrs: {
+                                                src:
+                                                  "/storage/avatars/" +
+                                                  data[indextr].picture
+                                              }
+                                            })
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        !data[indextr].picture
+                                          ? _c("vs-avatar", {
+                                              attrs: {
+                                                color: "primary",
+                                                text: data[indextr].name
+                                              }
+                                            })
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "vs-col",
+                                      {
+                                        attrs: {
+                                          "vs-type": "flex",
+                                          "vs-align": "center",
+                                          "vs-lg": "6",
+                                          "vs-md": "6",
+                                          "vs-sm": "6",
+                                          "vs-xs": "12"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "span",
+                                          {
+                                            staticStyle: {
+                                              "margin-top": "-10px"
+                                            }
+                                          },
+                                          [_vm._v(_vm._s(data[indextr].name))]
+                                        )
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "vs-td",
+                            { attrs: { data: data[indextr].company.name } },
+                            [
+                              _vm._v(
+                                "\n\t\t\t\t\t\t" +
+                                  _vm._s(data[indextr].company.name) +
+                                  "\n\t\t\t\t\t"
+                              )
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
+                            "vs-td",
+                            { attrs: { data: data[indextr].created_at } },
                             [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-map-pin",
-                                  "icon-no-border": "",
-                                  label: "Address"
-                                },
-                                model: {
-                                  value: _vm.company.address,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.company, "address", $$v)
-                                  },
-                                  expression: "company.address"
-                                }
-                              })
-                            ],
-                            1
+                              _vm._v(
+                                "\n\t\t\t\t\t\t" +
+                                  _vm._s(
+                                    data[indextr].created_at.split(" ")[0]
+                                  ) +
+                                  "\n\t\t\t\t\t"
+                              )
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-mail",
-                                  "icon-no-border": "",
-                                  label: "Email"
-                                },
-                                model: {
-                                  value: _vm.company.email,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.company, "email", $$v)
-                                  },
-                                  expression: "company.email"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-phone",
-                                  "icon-no-border": "",
-                                  label: "Phone"
-                                },
-                                model: {
-                                  value: _vm.company.phone,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.company, "phone", $$v)
-                                  },
-                                  expression: "company.phone"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-4",
-                              attrs: { "vs-align": "center", "vs-sm": "12" }
-                            },
-                            [
-                              _c("vs-input", {
-                                staticClass: "w-full",
-                                attrs: {
-                                  type: "text",
-                                  "icon-pack": "feather",
-                                  icon: "icon-hash",
-                                  "icon-no-border": "",
-                                  label: "Company No."
-                                },
-                                model: {
-                                  value: _vm.company.number,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.company, "number", $$v)
-                                  },
-                                  expression: "company.number"
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "vs-row",
-                        {
-                          attrs: {
-                            "vs-justify": "center",
-                            "vs-align": "center"
-                          }
-                        },
-                        [
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mt-4",
-                              attrs: {
-                                "vs-type": "flex",
-                                "vs-justify": "center",
-                                "vs-align": "center",
-                                "vs-w": "12"
-                              }
-                            },
+                            "vs-td",
+                            { attrs: { data: data[indextr].id } },
                             [
                               _c(
                                 "vs-button",
                                 {
                                   attrs: {
                                     "icon-pack": "feather",
-                                    icon: "icon-save",
+                                    icon: "icon-edit",
                                     color: "primary"
                                   },
                                   on: {
                                     click: function($event) {
-                                      return _vm.updateCompanyInfo()
+                                      return _vm.getClient(data[indextr].id)
                                     }
                                   }
                                 },
-                                [_vm._v("Save")]
+                                [_vm._v("Edit")]
                               )
                             ],
                             1
@@ -588,118 +857,36 @@ var render = function() {
                         ],
                         1
                       )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "vs-col",
-            {
-              staticClass: "mb-4",
-              attrs: {
-                "vs-align": "center",
-                "vs-sm": "12",
-                "vs-w": "12",
-                "vs-md": "6",
-                "vs-lg": "4"
-              }
+                    })
+                  }
+                }
+              ])
             },
             [
+              _c("template", { slot: "header" }, [
+                _c("h3", { staticClass: "mb-5" }, [
+                  _vm._v("\n\t\t\t\t\t\tEmployee\n\t\t\t\t\t")
+                ])
+              ]),
+              _vm._v(" "),
               _c(
-                "div",
-                { staticClass: "flex" },
+                "template",
+                { slot: "thead" },
                 [
-                  _c(
-                    "vx-card",
-                    {
-                      staticClass: "h-100",
-                      attrs: { title: "Inventory Items" }
-                    },
-                    [
-                      _c(
-                        "vs-row",
-                        [
-                          _c(
-                            "vs-col",
-                            {
-                              staticClass: "mb-5",
-                              attrs: {
-                                "vs-type": "flex",
-                                "vs-justify": "center",
-                                "vs-align": "center",
-                                "vs-w": "12"
-                              }
-                            },
-                            [
-                              _c(
-                                "vs-list",
-                                [
-                                  _c("vs-list-header", {
-                                    attrs: { title: "Item Name" }
-                                  }),
-                                  _vm._v(" "),
-                                  _vm._l(_vm.company.items, function(item) {
-                                    return _c(
-                                      "vs-list-item",
-                                      {
-                                        attrs: {
-                                          title: item.name,
-                                          subtitle: item.description
-                                        }
-                                      },
-                                      [
-                                        _c(
-                                          "vs-button",
-                                          {
-                                            attrs: {
-                                              size: "small",
-                                              "icon-pack": "feather",
-                                              icon: "icon-edit",
-                                              color: "primary"
-                                            },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.openEditPopUp(item)
-                                              }
-                                            }
-                                          },
-                                          [_vm._v("Edit")]
-                                        )
-                                      ],
-                                      1
-                                    )
-                                  }),
-                                  _vm._v(" "),
-                                  _vm.company.items.length == 0
-                                    ? _c("vs-list-item", {
-                                        attrs: {
-                                          title: "No items added yet",
-                                          subtitle:
-                                            "Items will be displayed here"
-                                        }
-                                      })
-                                    : _vm._e()
-                                ],
-                                2
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
+                  _c("vs-th", [_vm._v("\n\t\t\t\t\t\tName\n\t\t\t\t\t")]),
+                  _vm._v(" "),
+                  _c("vs-th", [_vm._v("\n\t\t\t\t\t\tCompany\n\t\t\t\t\t")]),
+                  _vm._v(" "),
+                  _c("vs-th", { attrs: { "sort-key": "status" } }, [
+                    _vm._v("\n\t\t\t\t\t\tSince\n\t\t\t\t\t")
+                  ]),
+                  _vm._v(" "),
+                  _c("vs-th")
                 ],
                 1
               )
-            ]
+            ],
+            2
           )
         ],
         1
@@ -708,35 +895,24 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "flex" }, [
-      _c("h3", { staticClass: "mt-6 mb-5" }, [
-        _vm._v("\n                Company\n            ")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
 
 /***/ }),
 
-/***/ "./resources/js/src/views/client/Company.vue":
-/*!***************************************************!*\
-  !*** ./resources/js/src/views/client/Company.vue ***!
-  \***************************************************/
+/***/ "./resources/js/src/views/client/Employees.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/src/views/client/Employees.vue ***!
+  \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Company_vue_vue_type_template_id_32ce4723___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Company.vue?vue&type=template&id=32ce4723& */ "./resources/js/src/views/client/Company.vue?vue&type=template&id=32ce4723&");
-/* harmony import */ var _Company_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Company.vue?vue&type=script&lang=js& */ "./resources/js/src/views/client/Company.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Employees_vue_vue_type_template_id_4182caab___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Employees.vue?vue&type=template&id=4182caab& */ "./resources/js/src/views/client/Employees.vue?vue&type=template&id=4182caab&");
+/* harmony import */ var _Employees_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Employees.vue?vue&type=script&lang=js& */ "./resources/js/src/views/client/Employees.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -746,9 +922,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Company_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Company_vue_vue_type_template_id_32ce4723___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Company_vue_vue_type_template_id_32ce4723___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _Employees_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Employees_vue_vue_type_template_id_4182caab___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Employees_vue_vue_type_template_id_4182caab___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -758,38 +934,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/src/views/client/Company.vue"
+component.options.__file = "resources/js/src/views/client/Employees.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/src/views/client/Company.vue?vue&type=script&lang=js&":
-/*!****************************************************************************!*\
-  !*** ./resources/js/src/views/client/Company.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************/
+/***/ "./resources/js/src/views/client/Employees.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/src/views/client/Employees.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Company_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Company.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Company.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Company_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Employees_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Employees.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Employees.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Employees_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/src/views/client/Company.vue?vue&type=template&id=32ce4723&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/src/views/client/Company.vue?vue&type=template&id=32ce4723& ***!
-  \**********************************************************************************/
+/***/ "./resources/js/src/views/client/Employees.vue?vue&type=template&id=4182caab&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/src/views/client/Employees.vue?vue&type=template&id=4182caab& ***!
+  \************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Company_vue_vue_type_template_id_32ce4723___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Company.vue?vue&type=template&id=32ce4723& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Company.vue?vue&type=template&id=32ce4723&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Company_vue_vue_type_template_id_32ce4723___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Employees_vue_vue_type_template_id_4182caab___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Employees.vue?vue&type=template&id=4182caab& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/client/Employees.vue?vue&type=template&id=4182caab&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Employees_vue_vue_type_template_id_4182caab___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Company_vue_vue_type_template_id_32ce4723___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Employees_vue_vue_type_template_id_4182caab___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -93,9 +93,9 @@
 		<div class="w-full mt-6">
 			<vs-row>
 				<vs-col vs-w="12">
-					<vs-button class="actionBtn mb-4" style="display: inline;" icon-pack="feather" @click="newPopupActive = true" icon="icon-plus">New Invoice</vs-button>
-					<vs-button class="actionBtn mb-4" style="display: inline;" v-if="selectedInvoices.length != 0" icon-pack="feather" color="danger" @click="deletePopUpActive = true" icon="icon-trash">Delete Invoices</vs-button>
-					<vs-button class="actionBtn mb-4" style="display: inline;" v-if="selectedInvoices.length != 0" icon-pack="feather" color="success" @click="paidPopUpActive = true" icon="icon-check">Mark as paid</vs-button>
+					<vs-button class="actionBtn mb-4 mr-5" style="display: inline;" icon-pack="feather" @click="newPopupActive = true" icon="icon-plus">New Invoice</vs-button>
+					<vs-button class="actionBtn mb-4 mr-5" style="display: inline;" v-if="selectedInvoices.length != 0" icon-pack="feather" color="danger" @click="deletePopUpActive = true" icon="icon-trash">Delete Invoices</vs-button>
+					<vs-button class="actionBtn mb-4 mr-5" style="display: inline;" v-if="selectedInvoices.length != 0" icon-pack="feather" color="success" @click="paidPopUpActive = true" icon="icon-check">Mark as paid</vs-button>
 					<vs-table multiple v-model="selectedInvoices" search max-items="10" pagination :data="invoices">
 						<template slot="header">
 							<h3 class="mb-5">

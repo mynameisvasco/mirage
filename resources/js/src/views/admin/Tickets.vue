@@ -10,6 +10,17 @@
 				</vs-col>
 			</vs-row>
 		</vs-popup>
+		<vs-popup background-color="rgba(0,0,0,.6)" class="holamundo" title="Urgent help request" :active.sync="urgentPopUpActive">
+			<vs-row >
+				<vs-col class="mb-4" vs-w="12">
+					<p>You are going to be redirected to our SOS software, after download it you should open it and after that create a ticket and send the code that you received, so that our support
+					team can help you.</p>
+				</vs-col>
+				<vs-col vs-w="12">
+					<vs-button color="warning" @click="sosPinGenerator()" icon-pack="feather" icon="icon-lock" type="filled">Get PIN code</vs-button>
+				</vs-col>
+			</vs-row>
+		</vs-popup>
 		<vs-popup background-color="rgba(0,0,0,.6)" class="holamundo" title="Resolve Ticket" :active.sync="resolvePopUpActive">
 			<vs-row>
 				<vs-col class="mb-4" vs-w="12">
@@ -96,7 +107,8 @@
 			</div>
 		</vs-popup>
 		<div class="w-full mt-6">
-			<vs-button icon-pack="feather" @click="newPopupActive = true" class="mb-4" icon="icon-plus">New Ticket</vs-button>
+			<vs-button class="actionBtn mb-4 mr-5" icon-pack="feather" style="display: inline;"  @click="newPopupActive = true" icon="icon-plus">New Ticket</vs-button>
+			<vs-button class="actionBtn mb-4 mr-5" icon-pack="feather" style="display: inline;"  @click="urgentPopUpActive = true" color="warning" icon="icon-alert-triangle">Urgent Help</vs-button>
 			<vs-table search max-items="10" pagination :data="tickets">
 				<template slot="header">
 					<h3 class="mb-5">
@@ -155,6 +167,7 @@ export default {
 			newPopupActive: false,
 			deletePopUpActive: false,
 			resolvePopUpActive: false,
+			urgentPopUpActive: false,
 			tickets:[],
 			viewTicket: {
 				user:{
@@ -347,7 +360,11 @@ export default {
 			.catch((error) =>{
 				console.log(error)
 			})
-		} 
+		},
+		sosPinGenerator()
+		{
+			window.open("https://sos.splashtop.com", "_blank");   
+		}
 	},
 	computed: {
 		user: function() {
