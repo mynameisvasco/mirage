@@ -1,6 +1,16 @@
 <template>
 	<div class="flex mb-4">
 		<vs-popup background-color="rgba(0,0,0,.6)" class="holamundo" title="Are you sure you want to delete this ticket?" :active.sync="deletePopUpActive">
+			<vs-row >
+				<vs-col class="mb-4" vs-w="12">
+					<p>After take this action you won't be able to go back. Please, make sure it's what you want to do.</p>
+				</vs-col>
+				<vs-col vs-w="12">
+					<vs-button color="danger" @click="deleteTicket(viewTicket.id)" icon-pack="feather" icon="icon-trash" type="filled">Delete</vs-button>
+				</vs-col>
+			</vs-row>
+		</vs-popup>
+		<vs-popup background-color="rgba(0,0,0,.6)" class="holamundo" title="Are you sure you want to delete this ticket?" :active.sync="deletePopUpActive">
 			<vs-row vs-justify="right" vs-align="flex-end" >
 				<vs-col vs-justify="right" vs-align="flex-end" class="mb-4" vs-w="12">
 					<p>After take this action you won't be able to go back. Please, make sure it's what you want to do</p>
@@ -54,7 +64,8 @@
 			</vs-row>
 		</vs-popup>
 		<div class="w-full mt-6">
-			<vs-button icon-pack="feather" @click="newPopupActive = true" class="mb-4" icon="icon-plus">New Ticket</vs-button>
+			<vs-button class="actionBtn mb-4 mr-5" icon-pack="feather" style="display: inline;"  @click="newPopupActive = true" icon="icon-plus">New Ticket</vs-button>
+			<vs-button class="actionBtn mb-4 mr-5" icon-pack="feather" style="display: inline;"  @click="urgentPopUpActive = true" color="warning" icon="icon-alert-triangle">Urgent Help</vs-button>
 			<vs-table search max-items="10" pagination :data="tickets">
 				<template slot="header">
 					<h3 class="mb-5">
@@ -105,6 +116,7 @@ export default {
 			editPopupActive: false,
 			newPopupActive: false,
 			deletePopUpActive: false,
+			urgentPopUpActive: false,
 			tickets:[],
 			viewTicket: [],
 			newMessage: [],

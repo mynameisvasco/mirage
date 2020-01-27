@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
 use Hash;
+use Crypt;
 
 class AuthController extends Controller
 {
@@ -29,24 +30,38 @@ class AuthController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->email_hash = hash('sha512', $request->email);
         $user->password = bcrypt($request->password);
         $user->rank = $request->rank;
-        if($request->company_rank)
+    
+        if($request->company_rank && !auth()->user()->isAdmin() && auth()->user()->company_rank == 3)
         {
             $user->company_rank = $request->company_rank;
         }
-        else
+        else if(auth()->user()->isAdmin())
         {
             $user->company_rank = 3;
         }
-        if($request->company_id)
+        else
         {
-            $user->company_id = $request->company_id;
+            $user->company_rank = 0;
         }
-        if(auth()->user()->company_rank == 3)
+        
+        //Case is a client admin adding the user
+        if(auth()->user()->company_rank == 3 && !auth()->user()->isAdmin())
         {
             $user->company_id = auth()->user()->company_id;
         }
+        //Case is an admin adding a client admin
+        else if($request->company_id && auth()->user()->isAdmin())
+        {
+            $user->company_id = $request->company_id;
+        }
+        else
+        {
+            $user->company_id = 0;
+        }
+
         if($request->hasFile('picture'))
         {
             $request->picture->storeAs('public/avatars', md5($request->email) . '.' . $request->picture->getClientOriginalExtension());
@@ -81,7 +96,7 @@ class AuthController extends Controller
         ]);
 
         $credentials = request(['email', 'password']);
-        if(!Auth::attempt($credentials))
+        if(!Auth::attempt( array('email_hash' => hash('sha512', $credentials["email"]), 'password' => $credentials["password"])))
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);

@@ -461,6 +461,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
 
+        _this4.editClient = {};
         _this4.editPopupActiveClients = false;
 
         _this4.$vs.notify({

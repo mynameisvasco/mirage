@@ -6,6 +6,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Cache;
+use Crypt;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'picture', 'rank'
+        'name', 'email', 'email_hash', 'password', 'picture', 'rank', 'company_id'
     ];
 
     /**
@@ -46,6 +47,46 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    protected $encrypt = [
+        'name',
+        'email',
+        'picture',
+    ];
+
+    public function setAttribute($key, $value)
+    {
+        if (in_array($key, $this->encrypt))
+        {
+            $value = Crypt::encrypt($value);
+        }
+
+        return parent::setAttribute($key, $value);
+    }
+
+    public function getAttribute($key)
+    {
+        if (in_array($key, $this->encrypt))
+        {
+            return Crypt::decrypt($this->attributes[$key]);
+        }
+
+        return parent::getAttribute($key);
+    }
+
+    public function attributesToArray()
+    {
+        $attributes = parent::attributesToArray();
+
+        foreach ($attributes as $key => $value)
+        {
+            if (in_array($key, $this->encrypt))
+            {
+                $attributes[$key] = Crypt::decrypt($value);
+            }
+        }
+
+        return $attributes;
+    }
 
     public function company()
     {
@@ -103,5 +144,9 @@ class User extends Authenticatable
         {
             return false;
         }
+    }
+    public function findForPassport($email_hash) 
+    {
+        return $this->where('email_hash', $email_hash)->first();
     }
 }

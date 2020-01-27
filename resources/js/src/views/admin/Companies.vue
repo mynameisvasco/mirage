@@ -430,6 +430,7 @@ export default {
 						this.$delete(this.clients, i)
 					}
 				}
+				this.editClient = {}
 				this.editPopupActiveClients = false
 				this.$vs.notify({
 					title:'Success!',

@@ -159,17 +159,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -178,7 +167,6 @@ __webpack_require__.r(__webpack_exports__);
       newPopupActive: false,
       deletePopUpActive: false,
       resolvePopUpActive: false,
-      urgentPopUpActive: false,
       tickets: [],
       viewTicket: {
         user: {
@@ -443,64 +431,6 @@ var render = function() {
     "div",
     { staticClass: "flex mb-4" },
     [
-      _c(
-        "vs-popup",
-        {
-          staticClass: "holamundo",
-          attrs: {
-            "background-color": "rgba(0,0,0,.6)",
-            title: "Are you sure you want to delete this ticket?",
-            active: _vm.deletePopUpActive
-          },
-          on: {
-            "update:active": function($event) {
-              _vm.deletePopUpActive = $event
-            }
-          }
-        },
-        [
-          _c(
-            "vs-row",
-            [
-              _c("vs-col", { staticClass: "mb-4", attrs: { "vs-w": "12" } }, [
-                _c("p", [
-                  _vm._v(
-                    "After take this action you won't be able to go back. Please, make sure it's what you want to do."
-                  )
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "vs-col",
-                { attrs: { "vs-w": "12" } },
-                [
-                  _c(
-                    "vs-button",
-                    {
-                      attrs: {
-                        color: "danger",
-                        "icon-pack": "feather",
-                        icon: "icon-trash",
-                        type: "filled"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.deleteTicket(_vm.viewTicket.id)
-                        }
-                      }
-                    },
-                    [_vm._v("Delete")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
       _c(
         "vs-popup",
         {
@@ -1124,25 +1054,6 @@ var render = function() {
               }
             },
             [_vm._v("New Ticket")]
-          ),
-          _vm._v(" "),
-          _c(
-            "vs-button",
-            {
-              staticClass: "actionBtn mb-4 mr-5",
-              staticStyle: { display: "inline" },
-              attrs: {
-                "icon-pack": "feather",
-                color: "warning",
-                icon: "icon-alert-triangle"
-              },
-              on: {
-                click: function($event) {
-                  _vm.urgentPopUpActive = true
-                }
-              }
-            },
-            [_vm._v("Urgent Help")]
           ),
           _vm._v(" "),
           _c(

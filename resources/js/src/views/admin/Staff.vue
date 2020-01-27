@@ -199,6 +199,7 @@ export default {
 					color:'success',
 					position:'top-right'
 				})
+				this.newPopupActive = false
 			})
 			.catch((error) =>{
 				//Show error notification
@@ -230,6 +231,7 @@ export default {
 					if(this.staffs[i].id == response.data.id) {
 						this.$set(this.staffs, i, response.data)
 					}
+					this.editPopupActive = false
 				}
 				this.$vs.notify({
 					title:'Success!',

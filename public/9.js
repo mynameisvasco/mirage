@@ -226,6 +226,8 @@ __webpack_require__.r(__webpack_exports__);
           color: 'success',
           position: 'top-right'
         });
+
+        _this3.newPopupActive = false;
       })["catch"](function (error) {
         //Show error notification
         Object.keys(error['response'].data.errors).forEach(function (key) {
@@ -263,6 +265,8 @@ __webpack_require__.r(__webpack_exports__);
           if (_this4.staffs[i].id == response.data.id) {
             _this4.$set(_this4.staffs, i, response.data);
           }
+
+          _this4.editPopupActive = false;
         }
 
         _this4.$vs.notify({
